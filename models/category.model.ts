@@ -25,7 +25,10 @@ const categorySchema = new Schema<Category>({
         type: Boolean,
         default: false
     },
-    position: Number,
+    position: {
+        type: Number,
+        min: [0,'Vị trí không được dưới số âm']
+    },
     status: {
         type: String,
         enum: ["active","inactive"]
