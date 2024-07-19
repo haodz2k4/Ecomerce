@@ -205,3 +205,27 @@ export const detail = async (req: Request, res: Response) :Promise<void>  =>{
         }
     }
 }
+//[PATCH] "/admin/categories/change-multi/:type"
+export const changeMulti = async (req: Request, res: Response) :Promise<void> =>{
+    const type = req.params.type;
+    const ids = req.body;
+    const [key, value] = type.split("-");
+    try {
+        const categories: any = [];
+        for(const item of ids){
+            const category = await Category.findByIdAndUpdate(item, 
+                {[key]: value},
+                {runValidators: true, new: true}).select(key);
+            categories.push(category)
+        }
+        
+        res.status(200).json({message: "Thay đổi nhiều danh mục thành công", categories});
+    } catch (error) {
+        console.error(error);
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi không xác định", error: error.message})
+        }else{
+            res.status(500).json({ message: "Lỗi không xác định" });
+        }
+    }
+}
