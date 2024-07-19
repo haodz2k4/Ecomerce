@@ -11,7 +11,10 @@ const urlDatabase = process.env.URL_DATABASE;
 getConnection(urlDatabase) 
 //end connect database 
 
-
+//admin router
+import adminRouter from './routers/admin/index.router';
+adminRouter(app);
+//port 
 const port = process.env.PORT || 5000; 
 app.listen(port, () =>{
     console.log("server is running on PORT: " + port)
