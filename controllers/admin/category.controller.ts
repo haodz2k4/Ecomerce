@@ -86,3 +86,22 @@ export const edit = async (req: Request, res: Response) :Promise<void> =>{
         }
     }
 }
+//[PATCH] "/admin/categories/soft-delete/:id"
+export const softDelete = async (req: Request, res: Response) :Promise<void>  =>{
+
+    const id = req.params.id;
+    try {
+        const category = await Category.findByIdAndUpdate(id, {deleted: true},{new: true}).select("deleted");
+        if(!category){
+            res.status(404).json({message: `Danh mục có id: ${id} không tồn tại`});
+            return;
+        }
+        res.status(200).json({message: "Cập nhật danh mục thành công",category })
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi không xác định", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"});
+        }
+    }
+}
