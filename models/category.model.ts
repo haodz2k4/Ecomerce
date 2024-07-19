@@ -29,9 +29,10 @@ const categorySchema = new Schema<Category>({
         type: Number,
         min: [0,'Vị trí không được dưới số âm']
     },
-    status: {
+    status: { 
         type: String,
-        enum: ["active","inactive"]
+        enum: ['active', 'inactive'], 
+        default: 'active'
     },
     parent_category: {
         type: String,

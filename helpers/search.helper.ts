@@ -34,4 +34,4 @@ export const buildSorting = (req: Request):Sort =>{
         sort[sortKey] = valueKey
     }
     return sort;
-}
+} 
