@@ -165,3 +165,22 @@ export const deletePermanently = async (req: Request, res: Response) :Promise<vo
         }
     }
 }
+//[GET] "/admin/categories/detail/:id"
+export const detail = async (req: Request, res: Response) :Promise<void>  =>{
+    const id = req.params.id;
+
+    try {
+        const category = await Category.findById(id);
+        if(!category){
+            res.status(404).json({message: "Không tìm thấy danh mục"});
+            return;
+        }
+        res.status(200).json({message: "Tìm thấy danh mục thành công",category})
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi không xác định", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định", error: error});
+        }
+    }
+}
