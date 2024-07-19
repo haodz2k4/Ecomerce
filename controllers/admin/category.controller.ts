@@ -144,10 +144,9 @@ export const restore = async (req: Request, res: Response) :Promise<void> =>{
 } 
 //[PATCH] "/admin/categories/garbages/restore/all"
 export const restoreAll = async (req: Request, res: Response) :Promise<void>  =>{
-    const ids = req.body;
     try { 
         const result = await Category.updateMany(
-            { _id: {$in: ids}, deleted: true }, {deleted: false}
+            {deleted: true }, {deleted: false}
         ).select("deleted")
 
         if(result.modifiedCount === 0){
@@ -209,17 +208,30 @@ export const detail = async (req: Request, res: Response) :Promise<void>  =>{
 export const changeMulti = async (req: Request, res: Response) :Promise<void> =>{
     const type = req.params.type;
     const ids = req.body;
-    const [key, value] = type.split("-");
-    try {
-        const categories: any = [];
-        for(const item of ids){
-            const category = await Category.findByIdAndUpdate(item, 
-                {[key]: value},
-                {runValidators: true, new: true}).select(key);
-            categories.push(category)
+    
+    try { 
+        if(type === "position"){
+            const categories:any[] = [];
+            for(const item of ids){
+                const [id, position] = item.split("-");
+                
+                const category = await Category.findByIdAndUpdate(id, {position},{runValidators: true, new: true}).select(type);
+                categories.push(category);
+            }
+            res.status(200).json({message: "Thay đổi vị trí nhiều danh mục thành công",categories})
+        }else{
+            const [key, value] = type.split("-");
+            const categories: any = [];
+            for(const item of ids){
+                const category = await Category.findByIdAndUpdate(item, 
+                    {[key]: value},
+                    {runValidators: true, new: true}).select(key);
+                categories.push(category)
+            }
+            
+            res.status(200).json({message: "Thay đổi nhiều danh mục thành công", categories});
         }
         
-        res.status(200).json({message: "Thay đổi nhiều danh mục thành công", categories});
     } catch (error) {
         console.error(error);
         if(error instanceof Error){

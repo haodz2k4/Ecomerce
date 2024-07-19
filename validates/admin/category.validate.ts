@@ -31,11 +31,11 @@ export const edit = async (req: Request, res: Response, next: NextFunction) :Pro
 
 export const changeMulti = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
     const type = req.params.type;
-    const ids = req.body;
     //example: 'status-active' 
-    const types = ["status-active","status-inactive","deleted-true"];
+    const types = ["status-active","status-inactive","deleted-true","position"];
     if(!types.includes(type)){
-        res.status(400).json({message: "Loại thay đổi không hợp lệ"});
+        res.status(400).json({message: "Loại thay đổi không hợp lệ", validType: types});
         return;
     } 
+    next();
 }
