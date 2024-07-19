@@ -10,7 +10,9 @@ config();
 const urlDatabase = process.env.URL_DATABASE;
 getConnection(urlDatabase) 
 //end connect database 
-
+//body parser 
+import bodyParser from "body-parser";
+app.use(bodyParser.json())
 //admin router
 import adminRouter from './routers/admin/index.router';
 adminRouter(app);

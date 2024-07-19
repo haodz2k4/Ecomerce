@@ -17,7 +17,10 @@ interface Category {
 const categorySchema = new Schema<Category>({
     title: {
         type: String,
-        unique: true
+        unique: true,
+        required: true,
+        minlength: 3,
+        maxlength: 20
     },
     description: String,
     thumbnail: String,
@@ -27,18 +30,22 @@ const categorySchema = new Schema<Category>({
     },
     position: {
         type: Number,
-        min: [0,'Vị trí không được dưới số âm']
+        required: true,
+        min: 0
     },
     status: { 
-        type: String,
         enum: ['active', 'inactive'], 
+        type: String,
         default: 'active'
     },
     parent_category: {
         type: String,
         default: ""
     },
-    slug: String,
+    slug: {
+        type: String,
+        required: true
+    },
 },{
     timestamps: true
 })

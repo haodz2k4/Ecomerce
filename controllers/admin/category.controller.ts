@@ -44,4 +44,24 @@ export const changeStatus = async (req: Request, res: Response) :Promise<void> =
     } catch (error) {
         res.status(500).json({message: "Lỗi không xác định", error})
     }
-}
+} 
+//[POST] "/admin/categories/add"
+export const add = async (req: Request, res: Response) :Promise<void> =>{
+    const body = req.body;
+    try {
+        const category = new Category(body);
+        await category.save();
+        res.status(200).json({message: "Thêm danh mục thành công", category})
+    } catch (error) { 
+        if (error instanceof Error) {
+            if (error.name === 'ValidationError') {
+                res.status(400).json({ message: "Lỗi xác thực", error: error.message });
+                return;
+            }
+            res.status(500).json({ message: "Lỗi không xác định", error: error.message });
+        } else {
+            res.status(500).json({ message: "Lỗi không xác định" });
+        }
+
+    }
+} 
