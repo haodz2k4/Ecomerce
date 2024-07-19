@@ -105,3 +105,21 @@ export const softDelete = async (req: Request, res: Response) :Promise<void>  =>
         }
     }
 }
+//[GET] "/admin/categories/garbages"
+export const garbages = async (req: Request, res: Response) :Promise<void>  =>{
+    const defaultLimit = 10;
+    try {
+        const find = buildFindQuery(req);
+        find.deleted = true
+        const sort = buildSorting(req);
+        const counts = await Category.countDocuments(find);
+        const pagination = getPagination(req, counts, defaultLimit);
+        const categories = await Category.find(find).sort(sort)
+        .limit(pagination.limit)
+        .skip(pagination.skip)
+        res.status(200).json({categories,counts, pagination})
+    } catch (error) {
+       res.status(500).json({message: "Lỗi không xác định"});
+    }
+   
+}
