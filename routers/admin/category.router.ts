@@ -8,6 +8,8 @@ router.patch("/change-status/:status/:id",controller.changeStatus);
 router.post("/add",validate.add,controller.add);
 router.patch("/edit/:id",controller.edit);
 router.patch("/soft-delete/:id",controller.softDelete);
-router.get("/garbages",controller.garbages)
+router.get("/garbages",controller.garbages);
+router.patch("/garbages/restore/:id",controller.restore);
+router.delete("/garbages/delete-permanently/:id",controller.deletePermanently)
 
 export default router;

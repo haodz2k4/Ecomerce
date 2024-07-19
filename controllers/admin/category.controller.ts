@@ -22,7 +22,7 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
         .skip(pagination.skip)
         res.status(200).json({categories, counts, pagination})
     } catch (error) {
-        res.status(500).json({message: "Lỗi không xác định"});
+        res.status(500).json({message: "Lỗi không xác định", error});
     }
 }
 //[PATCH] "/admin/categories/change-status/:status/:id"
@@ -43,7 +43,7 @@ export const changeStatus = async (req: Request, res: Response) :Promise<void> =
             }
             res.status(500).json({message: "Lỗi không xác định", error: error.message});
         }else{
-            res.status(500).json({message: "Lỗi không xác định"});
+            res.status(500).json({message: "Lỗi không xác định", error});
         }
     }
 } 
@@ -62,7 +62,7 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
             }
             res.status(500).json({ message: "Lỗi không xác định", error: error.message });
         } else {
-            res.status(500).json({ message: "Lỗi không xác định" });
+            res.status(500).json({ message: "Lỗi không xác định", error });
         }
 
     }
@@ -82,7 +82,7 @@ export const edit = async (req: Request, res: Response) :Promise<void> =>{
                 res.status(500).json({message: "Lỗi không xác định", error: error.message})
             }
         }else{
-            res.status(500).json({message: "Lỗi không xác định"})
+            res.status(500).json({message: "Lỗi không xác định", error})
         }
     }
 }
@@ -101,7 +101,7 @@ export const softDelete = async (req: Request, res: Response) :Promise<void>  =>
         if(error instanceof Error){
             res.status(500).json({message: "Lỗi không xác định", error: error.message})
         }else{
-            res.status(500).json({message: "Lỗi không xác định"});
+            res.status(500).json({message: "Lỗi không xác định", error});
         }
     }
 }
@@ -119,7 +119,49 @@ export const garbages = async (req: Request, res: Response) :Promise<void>  =>{
         .skip(pagination.skip)
         res.status(200).json({categories,counts, pagination})
     } catch (error) {
-       res.status(500).json({message: "Lỗi không xác định"});
+       res.status(500).json({message: "Lỗi không xác định", error});
     }
    
+}
+//[PATCH] "/admin/categories/garbages/restore/:id"
+export const restore = async (req: Request, res: Response) :Promise<void> =>{
+    const id = req.params.id;
+
+    try {
+        const category = await Category.findByIdAndUpdate(id, {deleted: false},{new: true}).select("deleted");
+        if(!category){
+            res.status(404).json({message: `Danh mục có: ${id} không tồn tại`});
+            return;
+        }
+        res.status(200).json({message: "Khôi phục danh mục thành công", category})
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi không xác định",error: error.message });
+        }else{
+            res.status(500).json({message: "Lỗi không xác định",error })
+        }
+    }
+}
+//[DELETE] "/admin/categories/garbages/delete-permanently/:id"
+export const deletePermanently = async (req: Request, res: Response) :Promise<void> =>{
+    const id = req.params.id;
+
+    try {
+        const category = await Category.findOne({
+            _id: id,
+            deleted: true
+        })
+        if(!category){
+            res.status(404).json({message: "Không tìm thấy danh mục hoặc danh mục không nằm trong xóa mềm"});
+            return;
+        }
+        await Category.deleteOne({_id: id})
+        res.status(200).json({message: "Xóa vĩnh viễn thành công",category})
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi không xác định", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định", error: error});
+        }
+    }
 }
