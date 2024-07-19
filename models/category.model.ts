@@ -20,7 +20,7 @@ const categorySchema = new Schema<Category>({
         unique: true,
         required: true,
         minlength: 3,
-        maxlength: 20
+        maxlength: 100
     },
     description: String,
     thumbnail: String,
