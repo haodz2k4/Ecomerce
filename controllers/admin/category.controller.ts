@@ -141,6 +141,26 @@ export const restore = async (req: Request, res: Response) :Promise<void> =>{
             res.status(500).json({message: "Lỗi không xác định",error })
         }
     }
+} 
+//[PATCH] "/admin/categories/garbages/restore/all"
+export const restoreAll = async (req: Request, res: Response) :Promise<void>  =>{
+    const ids = req.body;
+    try { 
+        const result = await Category.updateMany(
+            { _id: {$in: ids}, deleted: true }, {deleted: false}
+        ).select("deleted")
+
+        if(result.modifiedCount === 0){
+            res.status(404).json({message: "không có sản phẩm nào khôi phục thành công"})
+        }
+        res.status(200).json({message: "Khôi phục toàn bộ sản phẩm thành công",modifiedCount: result.modifiedCount })
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi không xác định", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định", error: error})
+        }
+    }
 }
 //[DELETE] "/admin/categories/garbages/delete-permanently/:id"
 export const deletePermanently = async (req: Request, res: Response) :Promise<void> =>{
@@ -177,6 +197,7 @@ export const detail = async (req: Request, res: Response) :Promise<void>  =>{
         }
         res.status(200).json({message: "Tìm thấy danh mục thành công",category})
     } catch (error) {
+        console.error(error)
         if(error instanceof Error){
             res.status(500).json({message: "Lỗi không xác định", error: error.message})
         }else{
