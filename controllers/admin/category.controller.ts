@@ -40,7 +40,7 @@ export const changeStatus = async (req: Request, res: Response) :Promise<void> =
             res.status(404).json({message: `Danh mục có id: ${id} không hợp lệ`});
             return;
         }
-        res.status(201).json({ message: "Cập nhật danh mục thành công", category})
+        res.status(200).json({ message: "Cập nhật danh mục thành công", category})
     } catch (error) {
         if(error instanceof Error){
             if(error.name === 'ValidationError'){

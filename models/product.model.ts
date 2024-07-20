@@ -1,13 +1,14 @@
 import { Schema, model } from "mongoose";
 interface Product {
     title: string,
-    product_category_id: string,
+    product_category_id: Schema.Types.ObjectId,
     description: string,
     avatar: string,
     price: number,
     discountPercentage: number,
     deleted: boolean,
     position: number,
+    
     status: ("active" | "inactive"),
     createdAt: Date,
     updatedAt: Date
@@ -17,10 +18,7 @@ const productSchema = new Schema<Product>({
         type: String,
         required: true
     },
-    product_category_id: {
-        type: String,
-        required: true
-    },
+    product_category_id: { type: Schema.Types.ObjectId, ref: 'category' },
     description: String,
     avatar: String,
     price: {

@@ -8,7 +8,7 @@ export const add = async (req: Request, res: Response, next: NextFunction) :Prom
     if(isValidObjectId(parent_category)){
         const category = await Category.findById(parent_category);
         if(!category){
-            res.status(400).json({message: "Danh mục cha không tồn tại"});
+            res.status(404).json({message: "Danh mục cha không tồn tại"});
             return;
         }
     }
@@ -21,7 +21,7 @@ export const edit = async (req: Request, res: Response, next: NextFunction) :Pro
     if(isValidObjectId(parent_category)){
         const category = await Category.findById(parent_category);
         if(!category){
-            res.status(400).json({message: "Danh mục cha không tồn tại"});
+            res.status(404).json({message: "Danh mục cha không tồn tại"});
             return;
         }
     }

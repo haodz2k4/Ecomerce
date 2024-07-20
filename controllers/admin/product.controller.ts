@@ -19,8 +19,10 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
         const counts = await Product.countDocuments(find);
         const pagination = getPagination(req, counts, defaultLimit);
         const products = await Product.find(find).sort(sort)
+        .populate('product_category_id','title thumbnail')
         .limit(pagination.limit)
-        .skip(pagination.skip) 
+        .skip(pagination.skip)
+        .select("-description -deleted")
         if(products.length === 0){
             res.status(404).json({message: "Không có dữ liệu nào được tìm thấy"});
             return;
