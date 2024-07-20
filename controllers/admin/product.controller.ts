@@ -4,8 +4,6 @@ import {Error} from 'mongoose';
 //helpers
 import { getPagination } from "../../helpers/pagination.helper";
 import { buildFindQuery, buildSorting, buildSuggestions } from "../../helpers/search.helper"; 
-import { buildCategoryTree } from "../../helpers/createTree.helper";
-
 //[GET] "/admin/products"
 export const index = async (req: Request, res: Response) :Promise<void> =>{ 
     
@@ -32,6 +30,29 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
         console.error("Lỗi Không xác định: "+error)
         if(error instanceof Error){
             res.status(500).json({message: "Lỗi truy xuất dữ liệu", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"});
+        }
+    }
+}
+//[POST] "/admin/products/add"
+export const add = async (req: Request, res: Response) :Promise<void> =>{
+
+    const body = req.body; 
+    try {
+        const product = new Product(body);
+        await product.save();
+        
+        res.status(201).json({message: "Thêm sản phẩm thành công", product})
+    } catch (error) {
+        console.error(error);
+        if(error instanceof Error){
+            if(error.name === 'ValidationError'){
+                res.status(400).json({message: "Lỗi xác thực", error: error.message});
+                return;
+            }else{
+                res.status(500).json({message: "Lỗi không xác định", error: error.message})
+            }
         }else{
             res.status(500).json({message: "Lỗi không xác định"});
         }

@@ -18,7 +18,7 @@ const productSchema = new Schema<Product>({
         type: String,
         required: true
     },
-    product_category_id: { type: Schema.Types.ObjectId, ref: 'category' },
+    product_category_id: {type: Schema.Types.ObjectId, ref: 'category'},
     description: String,
     avatar: String,
     price: {
