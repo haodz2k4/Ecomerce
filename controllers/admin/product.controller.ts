@@ -39,7 +39,15 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
 export const add = async (req: Request, res: Response) :Promise<void> =>{
 
     const body = req.body; 
-    try {
+    try { 
+
+        const position = body.position;
+        if(position){
+            body.position = parseInt(position);
+        }else{
+            const total = await Product.countDocuments();
+            body.position = total + 1;
+        }
         const product = new Product(body);
         await product.save();
         
