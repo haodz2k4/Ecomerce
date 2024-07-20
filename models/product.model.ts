@@ -17,7 +17,10 @@ const productSchema = new Schema<Product>({
         type: String,
         required: true
     },
-    product_category_id: String,
+    product_category_id: {
+        type: String,
+        required: true
+    },
     description: String,
     avatar: String,
     price: {

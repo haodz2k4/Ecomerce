@@ -23,6 +23,7 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
         .skip(pagination.skip) 
         if(categories.length === 0){
             res.status(404).json({message: "Không có dữ liệu nào được tìm thấy"});
+            return;
         }
         res.status(200).json({categories, counts, pagination})
     } catch (error) {
@@ -44,6 +45,7 @@ export const changeStatus = async (req: Request, res: Response) :Promise<void> =
         if(error instanceof Error){
             if(error.name === 'ValidationError'){
                 res.status(400).json({message: "Lỗi xác thực", error: error.message});
+                return;
             }
             res.status(500).json({message: "Lỗi không xác định", error: error.message});
         }else{
@@ -78,6 +80,10 @@ export const createTree = async (req: Request, res: Response): Promise<void> => 
             deleted: false,
             status: "active"
         }).select("title thumbnail position parent_category");
+        if(categories.length === 0){
+            res.status(404).json({message: "Không có danh mục nào"});
+            return;
+        }
         const categoryTree = buildCategoryTree(categories);
         res.status(200).json({ categoryTree });
     } catch (error) {
