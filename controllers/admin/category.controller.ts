@@ -4,6 +4,7 @@ import {Error} from 'mongoose';
 //helpers
 import { getPagination } from "../../helpers/pagination.helper";
 import { buildFindQuery, buildSorting, buildSuggestions } from "../../helpers/search.helper"; 
+import { buildCategoryTree } from "../../helpers/createTree.helper";
 
 //[GET] "/admin/categories"
 export const index = async (req: Request, res: Response) :Promise<void> =>{ 
@@ -70,6 +71,24 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
 
     }
 }  
+//[GET] "/admin/categories/create-tree"
+export const createTree = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const categories = await Category.find({
+            deleted: false,
+            status: "active"
+        }).select("title thumbnail position parent_category");
+        const categoryTree = buildCategoryTree(categories);
+        res.status(200).json({ categoryTree });
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){ 
+            res.status(500).json({message: "Không thể truy xuất dữ liệu", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+}
 //[PATCH] "/admin/categories/edit/:id"
 export const edit = async (req: Request, res: Response) :Promise<void> =>{
     const body = req.body;

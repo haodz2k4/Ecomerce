@@ -8,6 +8,7 @@ interface Category {
     position: number,
     status: ('active' | 'inactive'),
     parent_category: string,
+    children: Category[],
     createdAt: Date,
     updatedAt: Date,
     slug: string 
