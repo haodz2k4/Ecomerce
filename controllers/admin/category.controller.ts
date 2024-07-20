@@ -13,7 +13,7 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
         //find 
         const find = buildFindQuery(req); 
         //sorting 
-        const sort = buildSorting(req); 
+        const sort = buildSorting(req,"position","desc"); 
         //total document 
         const counts = await Category.countDocuments(find);
         const pagination = getPagination(req, counts, defaultLimit);
@@ -111,7 +111,7 @@ export const garbages = async (req: Request, res: Response) :Promise<void>  =>{
     try {
         const find = buildFindQuery(req);
         find.deleted = true
-        const sort = buildSorting(req);
+        const sort = buildSorting(req,"position","desc");
         const counts = await Category.countDocuments(find);
         const pagination = getPagination(req, counts, defaultLimit);
         const categories = await Category.find(find).sort(sort)
@@ -208,10 +208,9 @@ export const detail = async (req: Request, res: Response) :Promise<void>  =>{
 export const changeMulti = async (req: Request, res: Response) :Promise<void> =>{
     const type = req.params.type;
     const ids = req.body;
-    
+    const categories:any[] = [];
     try { 
         if(type === "position"){
-            const categories:any[] = [];
             for(const item of ids){
                 const [id, position] = item.split("-");
                 
@@ -221,7 +220,6 @@ export const changeMulti = async (req: Request, res: Response) :Promise<void> =>
             res.status(200).json({message: "Thay đổi vị trí nhiều danh mục thành công",categories})
         }else{
             const [key, value] = type.split("-");
-            const categories: any = [];
             for(const item of ids){
                 const category = await Category.findByIdAndUpdate(item, 
                     {[key]: value},
