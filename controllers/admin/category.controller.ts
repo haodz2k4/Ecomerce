@@ -3,7 +3,7 @@ import Category from '../../models/category.model';
 import {Error} from 'mongoose';
 //helpers
 import { getPagination } from "../../helpers/pagination.helper";
-import { buildFindQuery, buildSorting } from "../../helpers/search.helper"; 
+import { buildFindQuery, buildSorting, buildSuggestions } from "../../helpers/search.helper"; 
 
 //[GET] "/admin/categories"
 export const index = async (req: Request, res: Response) :Promise<void> =>{ 
@@ -239,3 +239,23 @@ export const changeMulti = async (req: Request, res: Response) :Promise<void> =>
         }
     }
 }
+//[GET] "/admin/categories/suggestions"
+export const suggestions = async (req: Request, res: Response) :Promise<void>  =>{
+
+    const find = buildSuggestions(req);
+    try {
+        const categories = await Category.find(find); 
+        if(categories.length === 0){
+            res.status(404).json({message: "Không tìm thấy gợi ý nào"});
+            return;
+        }
+        res.status(200).json({categories})
+    } catch (error) { 
+        console.error(error);
+        if(error instanceof Error){
+            res.status(500).json({message: "Không thể tìm thấy gợi ý", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+} 

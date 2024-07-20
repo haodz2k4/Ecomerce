@@ -13,4 +13,5 @@ router.delete("/garbages/delete-permanently/:id",controller.deletePermanently);
 router.patch("/garbages/restore/all",controller.restoreAll);
 router.patch("/garbages/restore/:id",controller.restore);
 router.patch("/change-multi/:type",validate.changeMulti, controller.changeMulti);
+router.get("/suggestions",controller.suggestions);
 export default router;

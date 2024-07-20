@@ -38,3 +38,14 @@ export const buildSorting = (req: Request, defaultKey: string, defaultValue: sor
 
     return sort;
 } 
+export const buildSuggestions = (req: Request) =>{
+    const find: Find = {deleted: false}; 
+    const keyword = req.query.keyword;
+
+    if(typeof keyword === 'string'){
+        find.title = new RegExp(keyword,"i")
+    } 
+
+    return find;
+
+}
