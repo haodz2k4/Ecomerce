@@ -11,5 +11,5 @@ const upload = multer()
 router.get("/",controller.index);
 router.post("/add",upload.single('avatar'),uploadSingle,validate.add,controller.add);
 router.patch("/change-status/:status/:id",controller.changeStatus);
-
+router.patch("/edit/:id",upload.single('avatar'),uploadSingle,validate.edit,controller.edit);
 export default router;

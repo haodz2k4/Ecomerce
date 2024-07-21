@@ -27,7 +27,8 @@ const productSchema = new Schema<Product>({
     },
     discountPercentage: {
         type: Number,
-        min: [0,'Phần trăm giảm giá không được là số âm']
+        min: [0,'Phần trăm giảm giá không được là số âm'],
+        max: [100,'Phần trăm giảm giá tối đa là 100']
     },
     deleted: {
         type: Boolean,

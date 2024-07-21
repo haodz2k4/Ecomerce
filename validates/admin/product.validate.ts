@@ -15,4 +15,17 @@ export const add = async (req: Request, res: Response, next: NextFunction) :Prom
         }
     }
     next();
+} 
+export const edit = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{ 
+    const product_category_id = req.body.product_category_id;
+    if(isValidObjectId(product_category_id)){
+        const category = await Category.exists({_id: product_category_id});
+        if(!category){
+            res.status(400).json({message: "Danh mục sản phẩm không hợp lệ"});
+            return;
+        } else{
+            req.body.product_category_id = Types.ObjectId.createFromHexString(product_category_id)
+        }
+    } 
+    next();
 }
