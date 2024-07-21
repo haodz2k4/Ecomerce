@@ -65,4 +65,27 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
             res.status(500).json({message: "Lỗi không xác định"});
         }
     }
-}
+} 
+//[PATCH] "/admin/products/change-status/:status/:id"
+export const changeStatus = async (req: Request, res: Response): Promise<void>  =>{
+    const status = req.params.status;
+    const id = req.params.id;
+
+    try {
+        const product = await Product.findByIdAndUpdate(id, {status},{new: true, runValidators: true}).select("status");
+        if(!product){
+            res.status(404).json({message: "Không tìm thấy sản phẩm có id là: "+id});
+            return;
+        }
+        res.status(200).json({message: "Cập nhật trạng thái thành công",product});
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            if(error.name === 'ValidationError'){
+                res.status(400).json({message: "Lỗi xác thực", error: error.message})
+            }
+        }else{
+            res.status(500).json({message:"Lỗi không xác định"})
+        }
+    }
+} 
