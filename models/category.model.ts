@@ -1,5 +1,6 @@
+import { createUniqueSlug } from './../helpers/slug.helper';
 import { Schema, model } from 'mongoose';
-
+import slugify from 'slugify';
 interface Category {
     title: string,
     description: string,
@@ -44,11 +45,17 @@ const categorySchema = new Schema<Category>({
         default: ""
     },
     slug: {
-        type: String,
-        required: true
+        type: String
     },
 },{
     timestamps: true
 })
+categorySchema.pre('save',async function(next): Promise<void>{
+    if(this.title && this.isModified("title")){
+        const initSlug = slugify(this.title, {lower: true, strict: true });
+        this.slug = await createUniqueSlug(model('category'),initSlug)
+    }
 
+    next();
+})
 export default model<Category>("category",categorySchema,"categories")

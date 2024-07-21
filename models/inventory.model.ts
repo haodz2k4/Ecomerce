@@ -1,14 +1,16 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 interface Inventory {
-    product_id: string,
+    product_id: Schema.Types.ObjectId,
     quantity: number,
     deleted: boolean
 }
 
-const inventorySchema = new Schema({
+const inventorySchema = new Schema<Inventory>({
     product_id: {
-        type: String,
-        required: true
+        type: Schema.Types.ObjectId,
+        ref: 'product',
+        required: true,
+        unique: true
     },
     quantity: {
         type: Number,
@@ -18,8 +20,8 @@ const inventorySchema = new Schema({
     },
     deleted: {
         type: Boolean,
-        default: 0
+        default: true
     }
 })
 
-export default model("inventory",inventorySchema,"inventories")
+export default model<Inventory>("inventory",inventorySchema,"inventories")

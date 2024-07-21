@@ -57,6 +57,11 @@ export const changeStatus = async (req: Request, res: Response) :Promise<void> =
 export const add = async (req: Request, res: Response) :Promise<void> =>{
     const body = req.body;
     try {
+        if(body.position){
+            body.position = parseInt(body.position)
+        }else{ 
+            body.position = await Category.countDocuments();
+        }
         const category = new Category(body);
         await category.save();
         res.status(201).json({message: "Thêm danh mục thành công", category})
