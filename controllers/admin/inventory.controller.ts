@@ -7,14 +7,15 @@ import { buildFindQuery, buildSorting } from './../../helpers/search.helper';
 export const index = async (req: Request, res: Response) :Promise<void> =>{
 
     try { 
-
+        const find = buildFindQuery(req);
+        const sort = buildSorting(req,'position','desc');
         const inventories = await Inventory.find({
-            deleted: false,
-            product_id: {$ne: null}
+            deleted: false
         }).populate({
             path: 'product_id',
-            select: 'title avatar price discountPercentage',
-            match: {deleted: false}
+            select: '-description -deleted',
+            match: find,
+            options: {sort}
         })
         if(inventories.length === 0){
             res.status(404).json({message: "Không có sản phẩm nào được tìm thấy"});
@@ -62,3 +63,4 @@ export const update = async (req: Request, res: Response) :Promise<void> =>{
         }
     }
 }   
+
