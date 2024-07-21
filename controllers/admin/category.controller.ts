@@ -146,7 +146,8 @@ export const garbages = async (req: Request, res: Response) :Promise<void>  =>{
         .limit(pagination.limit)
         .skip(pagination.skip) 
         if(categories.length === 0){
-            res.status(404).json({message: "Không tìm thấy dữ liệu nào"})
+            res.status(404).json({message: "Không tìm thấy dữ liệu nào"});
+            return;
         }
         res.status(200).json({categories,counts, pagination})
     } catch (error) {

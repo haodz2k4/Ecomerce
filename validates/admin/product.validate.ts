@@ -29,3 +29,13 @@ export const edit = async (req: Request, res: Response, next: NextFunction) :Pro
     } 
     next();
 }
+export const changeMulti = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
+    const type = req.params.type;
+    const validTypes: string[] = ["status-active","status-inactive","position","deleted-true"];
+    if(!validTypes.includes(type)){
+        res.status(400).json({message: "Loại thay đổi không hợp lệ"});
+        return;
+    }
+
+    next();
+}
