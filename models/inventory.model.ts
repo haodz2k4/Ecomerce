@@ -16,11 +16,11 @@ const inventorySchema = new Schema<Inventory>({
         type: Number,
         required: true,
         min: [0,'Số lượng ít nhất phải là 0'],
-        max: [1000,'Số lượng ít nhất phải là 1000']
+        max: [10000,'Số lượng ít nhất phải là 1000']
     },
     deleted: {
         type: Boolean,
-        default: true
+        default: false
     }
 })
 

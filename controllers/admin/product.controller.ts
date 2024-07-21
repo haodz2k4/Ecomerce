@@ -17,7 +17,11 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
         const counts = await Product.countDocuments(find);
         const pagination = getPagination(req, counts, defaultLimit);
         const products = await Product.find(find).sort(sort)
-        .populate('product_category_id','title thumbnail')
+        .populate({
+            path: 'product_category_id',
+            select: 'title thumbnail',
+            match: {deleted: false}
+        })
         .limit(pagination.limit)
         .skip(pagination.skip)
         .select("-description -deleted")

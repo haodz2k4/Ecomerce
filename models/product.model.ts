@@ -1,6 +1,7 @@
 import { Schema, model, PreSaveMiddlewareFunction } from "mongoose"; 
 import slugify from "slugify";
 import { createUniqueSlug } from "../helpers/slug.helper";
+import Inventory from './inventory.model';
 interface Product {
     title: string,
     product_category_id: Schema.Types.ObjectId,
@@ -61,4 +62,12 @@ productSchema.pre('save',async function(next) {
     next();
 })
 
+productSchema.post('save',async function(doc) {
+    
+    const inventory = new Inventory({
+        product_id: doc._id,
+        quantity: 0
+    })
+    await inventory.save();
+})
 export default model("product",productSchema,"products");
