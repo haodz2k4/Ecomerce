@@ -9,17 +9,18 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
     try { 
 
         const inventories = await Inventory.find({
-            deleted: false
+            deleted: false,
+            product_id: {$ne: null}
         }).populate({
             path: 'product_id',
             select: 'title avatar price discountPercentage',
-            match: {deleted: false,_id: {$ne: null}}
+            match: {deleted: false}
         })
         if(inventories.length === 0){
             res.status(404).json({message: "Không có sản phẩm nào được tìm thấy"});
             return;
         }
-        res.status(200).json({inventories})
+        res.json({inventories})
 
     } catch (error) {
         console.error(error);
@@ -29,4 +30,35 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
             res.status(500).json({message: "Lỗi không xác định"})
         }
     }
-}
+} 
+//[PATCH] "/admin/inventories/update"
+export const update = async (req: Request, res: Response) :Promise<void> =>{
+    const body = req.body;
+    try {
+        const inventories: any[] = [];
+
+        for(const item of body){
+            const id = item.id;
+            const quantity = parseInt(item.quantiy); 
+            const inventory = await Inventory.findById(id).select("quantity"); 
+            if(!inventory){
+                res.status(404).json({message: "Không tìm thấy id: "+ item.id});
+                return;
+            }
+            const result = inventory.quantity + quantity; 
+            inventory.quantity = result;
+
+            await inventory.save();
+
+            inventories.push(inventory  );
+        }
+        res.status(200).json({message: "Cập nhật thành công",inventories })
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi cập nhật dữ liệu", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"});
+        }
+    }
+}   
