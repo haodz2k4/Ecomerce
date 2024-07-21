@@ -1,4 +1,6 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, PreSaveMiddlewareFunction } from "mongoose"; 
+import slugify from "slugify";
+import { createUniqueSlug } from "../helpers/slug.helper";
 interface Product {
     title: string,
     product_category_id: Schema.Types.ObjectId,
@@ -8,7 +10,7 @@ interface Product {
     discountPercentage: number,
     deleted: boolean,
     position: number,
-    
+    slug: string,
     status: ("active" | "inactive"),
     createdAt: Date,
     updatedAt: Date
@@ -38,12 +40,25 @@ const productSchema = new Schema<Product>({
         type: Number,
         min: [0,'Vị trí không được là số âm']
     },
+    slug: {
+        type: String,
+        unique: true
+    },
     status: {
         type: String,
         enum: ["active","inactive"]
     },
 },{
     timestamps: true
+}) 
+
+productSchema.pre('save',async function(next) { 
+    if(this.title && this.isModified("title")){
+        const initSlug = slugify(this.title,{lower: true, strict: true});
+        this.slug = await createUniqueSlug(model('product'),initSlug);
+    }
+
+    next();
 })
 
 export default model("product",productSchema,"products");
