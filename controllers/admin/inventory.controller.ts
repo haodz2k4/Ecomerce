@@ -63,4 +63,24 @@ export const update = async (req: Request, res: Response) :Promise<void> =>{
         }
     }
 }   
+//[PATCH] "/admin/invenetories/delete/:id"
+export const deleteInventory = async (req: Request, res: Response) :Promise<void> =>{
+    const id = req.params.id;
+    try {
+        const inventory = await Inventory.findByIdAndUpdate({
+            _id: id
+        },{deleted: true}, {new: true, runValidators: true}).select("deleted");
+        if(!inventory){
+            res.status(404).json({message: "Không tìm thấy kho hàng tương ứng"});
+            return;
+        }
 
+        res.status(200).json({message: "Xóa thành công", inventory})
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi cập nhật dữ liệu", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+}
