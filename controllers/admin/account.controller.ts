@@ -12,7 +12,7 @@ export const index  = async (req: Request,res: Response) :Promise<void> =>{
 
     const defaultLimit = 10;
     try { 
-        const find = buildFindQuery(req);
+        const find = buildFindQuery(req,'fullName');
         const counts = await Account.countDocuments(find);
         const pagination = getPagination(req,counts,defaultLimit);
         const sort = buildSorting(req,{});

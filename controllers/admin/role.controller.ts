@@ -25,4 +25,20 @@ export const index = async(req: Request, res: Response) :Promise<void> =>{
             res.status(500).json({message: "Lỗi không xác định"})
         }
     }
+} 
+//[GET] "/admin/roles/add"
+export const add = async (req: Request, res: Response) :Promise<void> =>{
+    const body = req.body;
+    try {
+        const role = new Role(body);
+        await role.save();
+        res.status(200).json({message: "Thêm sản phẩm thành công", role});
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi thêm sản phẩm", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"});
+        }
+    }
 }

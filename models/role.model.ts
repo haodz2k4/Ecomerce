@@ -1,7 +1,7 @@
 import {Schema, model} from "mongoose"; 
 interface Role {
     title: string,
-    avatar: string,
+    thumbnail: string,
     description: string,
     permissions?: string[],
     deleted: boolean,
@@ -12,7 +12,7 @@ const roleSchema = new Schema<Role>({
         type: String,
         required: true
     },
-    avatar: String,
+    thumbnail: String,
     description: String,
     permissions: {
         type: Array,
