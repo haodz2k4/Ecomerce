@@ -25,15 +25,15 @@ export const buildFindQuery = (req: Request): Find => {
 
     return find;
 }
-export const buildSorting = (req: Request, defaultKey: string, defaultValue: sortType):Sort =>{ 
-    const sort: Sort = {};
+export const buildSorting = (req: Request,defaultSort: Sort):Sort =>{ 
+    let sort: Sort = {};
     const sortKey = req.query.sortKey;
     const valueKey = req.query.valueKey;
 
     if(typeof sortKey === 'string' && (valueKey === "asc" || valueKey === "desc")){
         sort[sortKey] = valueKey
     } else{
-        sort[defaultKey] = defaultValue
+        sort = {...defaultSort}
     }
 
     return sort;

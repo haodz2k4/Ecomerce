@@ -12,7 +12,7 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
         //find 
         const find = buildFindQuery(req); 
         //sorting 
-        const sort = buildSorting(req,"position","desc"); 
+        const sort = buildSorting(req,{position: 'desc'}); 
         //total document 
         const counts = await Product.countDocuments(find);
         const pagination = getPagination(req, counts, defaultLimit);
@@ -144,7 +144,7 @@ export const garbages = async (req: Request, res: Response) :Promise<void>  =>{
     try {
         const find = buildFindQuery(req);
         find.deleted = true
-        const sort = buildSorting(req,"position","desc");
+        const sort = buildSorting(req,{position: 'desc'});
         const counts = await Product.countDocuments(find);
         const pagination = getPagination(req, counts, defaultLimit);
         const products = await Product.find(find).sort(sort)

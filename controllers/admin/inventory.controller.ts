@@ -8,7 +8,7 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
 
     try { 
         const find = buildFindQuery(req);
-        const sort = buildSorting(req,'position','desc');
+        const sort = buildSorting(req,{position: 'desc'});
         const inventories = await Inventory.find({
             deleted: false
         }).populate({

@@ -4,7 +4,7 @@ import system from "../../config/system";
 import categoryRouter from '../../routers/admin/category.router';
 import productRouter from '../../routers/admin/product.router';
 import inventoryRouter from '../../routers/admin/inventory.router';
-import supplierRouter from "../../routers/admin/supplier.router";
+import accountRouter from '../../routers/admin/account.router';
 //end router
 const {prefixAdmin} = system;
 export default (app: Express): void =>{
@@ -13,5 +13,5 @@ export default (app: Express): void =>{
     app.use(`${path}/categories`,categoryRouter);
     app.use(`${path}/products`,productRouter);
     app.use(`${path}/inventories`,inventoryRouter);
-    app.use(`${path}/suppliers`,supplierRouter);
+    app.use(`${path}/accounts`,accountRouter);
 }

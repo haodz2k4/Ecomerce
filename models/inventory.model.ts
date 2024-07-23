@@ -9,7 +9,7 @@ const inventorySchema = new Schema<Inventory>({
     product_id: {
         type: Schema.Types.ObjectId,
         ref: 'product',
-        required: true,
+        required: true, 
         unique: true
     },
     quantity: {
