@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { isValidObjectId } from "mongoose";
 import Category from "../../models/category.model";
+//validator
+import { isValidObjectId } from "mongoose";
+import { isURL } from "validator";
 export const add = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
     
     //check parent_category is Exists 
@@ -12,7 +14,11 @@ export const add = async (req: Request, res: Response, next: NextFunction) :Prom
             return;
         }
     }
-
+    const thumbnail = req.body.thumbnail;
+    if(!isURL(thumbnail)){
+        res.status(400).json({message: "Đường link ảnh không hợp lệ"});
+        return;
+    }
     next();
 }
 
@@ -25,7 +31,11 @@ export const edit = async (req: Request, res: Response, next: NextFunction) :Pro
             return;
         }
     }
-
+    const thumbnail = req.body.thumbnail;
+    if(!isURL(thumbnail)){
+        res.status(400).json({message: "Đường link ảnh không hợp lệ"});
+        return;
+    }
     next();
 }
 

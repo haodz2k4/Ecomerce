@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import Category from "../../models/category.model";
+//validator 
 import {isValidObjectId, Types} from "mongoose";
+import { isURL } from "validator";
 export const add = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
     
     let product_category_id = req.body.product_category_id;
@@ -13,6 +15,11 @@ export const add = async (req: Request, res: Response, next: NextFunction) :Prom
                 return;
             }
         }
+    } 
+    const avatar = req.body.avatar;
+    if(!isURL(avatar)){
+        res.status(400).json({message: "Ảnh phải là đường link"});
+        return;
     }
     next();
 } 
@@ -26,7 +33,12 @@ export const edit = async (req: Request, res: Response, next: NextFunction) :Pro
         } else{
             req.body.product_category_id = Types.ObjectId.createFromHexString(product_category_id)
         }
-    } 
+    }  
+    const avatar = req.body.avatar;
+    if(!isURL(avatar)){
+        res.status(400).json({message: "Ảnh phải là đường link"});
+        return;
+    }
     next();
 }
 export const changeMulti = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
