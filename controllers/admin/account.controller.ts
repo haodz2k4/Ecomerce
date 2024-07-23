@@ -75,4 +75,25 @@ export const changeRoles = async (req: Request, res: Response) :Promise<void> =>
         }
     }
     
+} 
+//[PATCH] "/admin/accounts/change/status"
+export const changeStatus = async (req: Request, res: Response) :Promise<void> =>{ 
+    const status = req.body.status;
+    const id = req.body.id;
+    try {
+        const account = await Account.findByIdAndUpdate(id, {status},{new: true, runValidators: true}).select("status");
+        if(!account){
+            res.status(404).json({message:"Tài khoản không tìm thấy"});
+            return; 
+        } 
+        res.status(200).json({message: "Cập nhật trạng thái tài khoản thành công", account})
+
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi cập nhật sản phẩm", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})   
+        }
+    }
 }
