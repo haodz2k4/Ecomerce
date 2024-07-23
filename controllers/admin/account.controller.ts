@@ -97,3 +97,26 @@ export const changeStatus = async (req: Request, res: Response) :Promise<void> =
         }
     }
 }
+//[PATCH] "/admin/accounts/change/multi"
+export const changeMulti = async (req: Request, res: Response) :Promise<void> =>{
+    const ids = req.body.ids;
+    const type = req.body.type;
+    try {
+        const infoUpdate = await Account.updateMany(
+            {_id: {$in: ids}},{...type});
+
+        if(infoUpdate.modifiedCount === 0){
+            res.status(404).json({message:"Không có sản phẩm nào cập nhật"});
+            return;
+        }
+
+        res.status(200).json({message: "Thay đổi nhiều tài khoản thành công", infoUpdate})
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi cập nhật dữ liệu", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+}

@@ -59,4 +59,14 @@ export const changeRoles = async (req: Request, res: Response, next: NextFunctio
     } catch (error) {
         next(error)
     }
+} 
+
+
+export const changeMulti = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
+    const types: any[] = [{deleted: true}, {deleted: false}, {status: "active"},{status: "inactive"}] 
+    if(!types.includes(req.body.type)){
+        res.status(404).json({message: "Thể loại thay đổi không hợp lệ"});
+        return;
+    }
+    next();
 }
