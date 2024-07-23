@@ -1,4 +1,6 @@
 import { Schema, model, Types } from "mongoose";
+import {hash} from "bcrypt";
+import { generateString } from "../helpers/generate.helper";
 interface Account {
     fullName: string,
     avatar: string,
@@ -24,6 +26,7 @@ const accountSchema = new Schema<Account>({
     phone: {
         type: String,
         required: true,
+        unique: true,
     }, 
     role_id: {
         type: Schema.Types.ObjectId,
@@ -48,4 +51,20 @@ const accountSchema = new Schema<Account>({
     timestamps: true
 }) 
 
+accountSchema.pre('save',async function (next) {
+
+    if(!this.isModified('password') && !this.isModified('token')){
+        next();
+        return;
+    } 
+    try {
+        this.token = generateString(30);
+        this.password = await hash(this.password,10);
+        next();
+    } catch (error) {
+        console.error(error);
+        next();
+    }
+    
+})
 export default model<Account>("account",accountSchema,"accounts")

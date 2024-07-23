@@ -1,12 +1,10 @@
 import { Request, Response } from "express"; 
 import Account from "../../models/account.model"; 
 import { Error } from "mongoose";
-import {hash} from "bcrypt";
 //helpers
 import { buildFindQuery } from './../../helpers/search.helper';
 import { getPagination } from "../../helpers/pagination.helper";
 import { buildSorting } from "./../../helpers/search.helper"; 
-import { generateString } from './../../helpers/generate.helper';
 //[GET] "/admin/accounts"
 export const index  = async (req: Request,res: Response) :Promise<void> =>{ 
 
@@ -16,7 +14,12 @@ export const index  = async (req: Request,res: Response) :Promise<void> =>{
         const counts = await Account.countDocuments(find);
         const pagination = getPagination(req,counts,defaultLimit);
         const sort = buildSorting(req,{});
-        const accounts = await Account.find(find).limit(pagination.limit).skip(pagination.skip).sort(sort);
+        const accounts = await Account.find(find)
+        .select("-token -password -deleted")
+        .limit(pagination.limit)
+        .skip(pagination.skip)
+        .sort(sort)
+        .populate('role_id','title permissions');
         if(accounts.length === 0){
             res.status(404).json({message: "Không tìm thấy bất kỳ tài khoản nào"});
             return;
@@ -34,11 +37,8 @@ export const index  = async (req: Request,res: Response) :Promise<void> =>{
 export const add = async (req: Request, res: Response) :Promise<void> =>{
     const body = req.body;
     try { 
-        body.token = generateString(30);
-        body.password = await hash(body.password,10);
         const account = new Account(body);
         await account.save();
-
         res.status(201).json({message: "Thêm tài khoản thành công", account});
     } catch (error) {
         if(error instanceof Error){
@@ -47,4 +47,4 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
             res.status(500).json({message: "Lỗi không xác định"})
         }
     }
-} 
+}  
