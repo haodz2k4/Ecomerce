@@ -1,6 +1,8 @@
 import { Request, Response } from "express"; 
 import Account from "../../models/account.model"; 
-import { Error } from "mongoose";
+import { Error, isObjectIdOrHexString } from "mongoose";
+import { Types } from "mongoose";
+import Role from "../../models/role.model";
 //helpers
 import { buildFindQuery } from './../../helpers/search.helper';
 import { getPagination } from "../../helpers/pagination.helper";
@@ -41,6 +43,7 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
         await account.save();
         res.status(201).json({message: "Thêm tài khoản thành công", account});
     } catch (error) {
+        console.error(error)
         if(error instanceof Error){
             res.status(500).json({message: "Lỗi khi thêm sản phẩm", error: error.message})
         }else{
@@ -48,3 +51,28 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
         }
     }
 }  
+//[PATCH] "/admin/accounts/change/roles"
+export const changeRoles = async (req: Request, res: Response) :Promise<void> =>{
+    try {
+        const roleId = Types.ObjectId.createFromHexString(req.body.roleId);
+        const accountId = req.body.accountId;
+    
+        const account = await Account.findByIdAndUpdate(accountId,{role_id: roleId}, {new: true, runValidators: true})
+        .populate('role_id','title avatar permissions')
+        .select("fullName");
+        if(!account){
+            res.status(404).json({message: "Không tìm thấy tài khoản tương ứng"});
+            return;
+        }
+
+        res.status(200).json({account})
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Không thể thay đổi vai trò", error: error.message});
+        }else{
+            res.status(500).json({message: "lỗi không xác định"});
+        }
+    }
+    
+}
