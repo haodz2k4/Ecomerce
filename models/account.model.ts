@@ -27,7 +27,8 @@ const accountSchema = new Schema<Account>({
     }, 
     role_id: {
         type: Schema.Types.ObjectId,
-        ref: 'role'
+        ref: 'role',
+        required: true
     },
     password: {
         type: String,

@@ -1,10 +1,12 @@
 import { Request, Response } from "express"; 
 import Account from "../../models/account.model"; 
 import { Error } from "mongoose";
+import {hash} from "bcrypt";
 //helpers
 import { buildFindQuery } from './../../helpers/search.helper';
 import { getPagination } from "../../helpers/pagination.helper";
-import { buildSorting } from "./../../helpers/search.helper";
+import { buildSorting } from "./../../helpers/search.helper"; 
+import { generateString } from './../../helpers/generate.helper';
 //[GET] "/admin/accounts"
 export const index  = async (req: Request,res: Response) :Promise<void> =>{ 
 
@@ -28,4 +30,21 @@ export const index  = async (req: Request,res: Response) :Promise<void> =>{
         }
     }
 } 
-//
+//[POST] "/admin/accounts/add"
+export const add = async (req: Request, res: Response) :Promise<void> =>{
+    const body = req.body;
+    try { 
+        body.token = generateString(30);
+        body.password = await hash(body.password,10);
+        const account = new Account(body);
+        await account.save();
+
+        res.status(201).json({message: "Thêm tài khoản thành công", account});
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi thêm sản phẩm", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+} 
