@@ -3,13 +3,14 @@ interface Account {
     fullName: string,
     avatar: string,
     phone: string,
-    role_id: Types.ObjectId,
+    email: String,
+    role_id: Schema.Types.ObjectId,
     password: string,
     token: string,
     deleted: boolean,
     status: string
 }
-const accountSchema = new Schema({
+const accountSchema = new Schema<Account>({
     fullName: {
         type: String,
         required: true
@@ -25,7 +26,7 @@ const accountSchema = new Schema({
         required: true,
     }, 
     role_id: {
-        type: Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'role'
     },
     password: {
@@ -46,4 +47,4 @@ const accountSchema = new Schema({
     timestamps: true
 }) 
 
-export default model("account",accountSchema,"accounts")
+export default model<Account>("account",accountSchema,"accounts")

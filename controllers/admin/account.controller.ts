@@ -13,7 +13,7 @@ export const index  = async (req: Request,res: Response) :Promise<void> =>{
         const find = buildFindQuery(req);
         const counts = await Account.countDocuments(find);
         const pagination = getPagination(req,counts,defaultLimit);
-        const sort = buildSorting(req,{position: 'desc'});
+        const sort = buildSorting(req,{});
         const accounts = await Account.find(find).limit(pagination.limit).skip(pagination.skip).sort(sort);
         if(accounts.length === 0){
             res.status(404).json({message: "Không tìm thấy bất kỳ tài khoản nào"});
