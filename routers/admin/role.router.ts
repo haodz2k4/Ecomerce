@@ -7,5 +7,6 @@ import {uploadSingle} from "../../middlewares/admin/uploadCloud.middlewares";
 //validate
 import * as validate from "../../validates/admin/role.validate";
 router.get("/",controller.index);
-router.post("/add",upload.single('thumbnail'),uploadSingle,validate.add,controller.add)
+router.post("/add",upload.single('thumbnail'),uploadSingle,validate.add,controller.add);
+router.patch("/edit/:id",validate.edit,controller.edit);
 export default router;

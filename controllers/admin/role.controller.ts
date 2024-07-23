@@ -42,3 +42,25 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
         }
     }
 }
+//[PATCH] "/admin/roles/edit/:id"
+export const edit = async (req: Request, res: Response) =>{
+    try {
+        const id = req.params.id; 
+        const body = req.body;
+        const role = await Role.findByIdAndUpdate(id, body,{new: true, runValidators: true});
+
+        if(!role){
+            res.status(404).json({message: "Không tìm thấy vai trò"});
+            return;
+        }
+
+        res.status(200).json({message: "Cập nhật thành công", role})
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi cập nhật trạng thái", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+}

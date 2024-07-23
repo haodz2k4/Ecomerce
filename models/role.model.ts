@@ -28,5 +28,7 @@ const roleSchema = new Schema<Role>({
         enum: ["active","inactive"]
     }
 
+},{
+    timestamps: true
 })
 export default model("role",roleSchema,"roles")
