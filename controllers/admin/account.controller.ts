@@ -39,9 +39,7 @@ export const index  = async (req: Request,res: Response) :Promise<void> =>{
 //[POST] "/admin/accounts/add"
 export const add = async (req: Request, res: Response) :Promise<void> =>{
     const body = req.body;
-    const createdId = res.locals.account.id
     try {  
-        body.createdBy = createdId
         const account = new Account(body);
         await account.save(); 
 
@@ -59,11 +57,11 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
 }  
 //[PATCH] "/admin/accounts/change/roles"
 export const changeRoles = async (req: Request, res: Response) :Promise<void> =>{
-    try {
+    try { 
         const roleId = Types.ObjectId.createFromHexString(req.body.roleId);
         const accountId = req.body.accountId;
-        const updatedId = res.locals.account.id;
-        const account = await Account.findByIdAndUpdate(accountId,{role_id: roleId, updatedBy: updatedId}, {new: true, runValidators: true})
+        const updatedBy = req.body.updatedBy;
+        const account = await Account.findByIdAndUpdate(accountId,{role_id: roleId, updatedBy: updatedBy}, {new: true, runValidators: true})
         .populate('role_id','title avatar permissions')
         .populate('updatedBy','fullName email')
         .select("fullName email role_id updatedBy");
