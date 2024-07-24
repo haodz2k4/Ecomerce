@@ -26,7 +26,7 @@ export const index = async(req: Request, res: Response) :Promise<void> =>{
         }
     }
 } 
-//[GET] "/admin/roles/add"
+//[POST] "/admin/roles/add"
 export const add = async (req: Request, res: Response) :Promise<void> =>{
     const body = req.body;
     try {
