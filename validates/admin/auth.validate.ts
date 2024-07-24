@@ -6,6 +6,11 @@ export const login =  (req: Request, res: Response, next: NextFunction) :void =>
     if (!identifier) {
         res.status(400).json({ message: "Mã định không được bỏ trống"});
         return;
+    } 
+    const password = req.body.password; 
+    if(!password){
+        res.status(400).json({message: "password không được để trống"});
+        return;
     }
     if(typeof identifier === 'string'){
         if(isEmail(identifier)){
