@@ -11,4 +11,5 @@ router.post("/add",validate.add,createLog('create'), controller.add);
 router.patch("/change/roles",createLog('update'),validate.changeRoles,controller.changeRoles);
 router.patch("/change/status",createLog('update'),controller.changeStatus);
 router.patch("/change/multi",createLog('update'),validate.changeMulti,controller.changeMulti);
+router.patch("/delete/:id",createLog('delete'),controller.deleteAccount)
 export default router;

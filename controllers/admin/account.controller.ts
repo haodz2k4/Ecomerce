@@ -124,4 +124,22 @@ export const changeMulti = async (req: Request, res: Response) :Promise<void> =>
             res.status(500).json({message: "Lỗi không xác định"})
         }
     }
+} 
+//[PATCH] "/admin/accounts/delete/:id"
+export const deleteAccount = async (req: Request, res: Response) :Promise<void> =>{ 
+    const id = req.params.id
+    try {
+        const account = await Account.findByIdAndUpdate(id,{deleted: true}).select("fullName deleted");
+        if(!account){
+            res.status(404).json({message: "Không tìm thấy tài khoản tương ứng"});
+            return;
+        }
+        res.status(200).json({message: "Xóa sản phẩm thành công", account});
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi xóa sản phẩm", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
 }
