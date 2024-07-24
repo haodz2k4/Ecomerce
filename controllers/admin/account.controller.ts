@@ -21,7 +21,8 @@ export const index  = async (req: Request,res: Response) :Promise<void> =>{
         .limit(pagination.limit)
         .skip(pagination.skip)
         .sort(sort)
-        .populate('role_id','title permissions');
+        .populate('role_id','title permissions')
+        .populate('createdBy','fullName avatar email');
         if(accounts.length === 0){
             res.status(404).json({message: "Không tìm thấy bất kỳ tài khoản nào"});
             return;
@@ -38,9 +39,14 @@ export const index  = async (req: Request,res: Response) :Promise<void> =>{
 //[POST] "/admin/accounts/add"
 export const add = async (req: Request, res: Response) :Promise<void> =>{
     const body = req.body;
-    try { 
+    const createdId = res.locals.account.id
+    try {  
+        body.createdBy = createdId
         const account = new Account(body);
-        await account.save();
+        await account.save(); 
+
+        await account.populate('role_id', 'title');
+        await account.populate('createdBy', 'fullName email');
         res.status(201).json({message: "Thêm tài khoản thành công", account});
     } catch (error) {
         console.error(error)
@@ -49,17 +55,18 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
         }else{
             res.status(500).json({message: "Lỗi không xác định"})
         }
-    }
+    }   
 }  
 //[PATCH] "/admin/accounts/change/roles"
 export const changeRoles = async (req: Request, res: Response) :Promise<void> =>{
     try {
         const roleId = Types.ObjectId.createFromHexString(req.body.roleId);
         const accountId = req.body.accountId;
-    
-        const account = await Account.findByIdAndUpdate(accountId,{role_id: roleId}, {new: true, runValidators: true})
+        const updatedId = res.locals.account.id;
+        const account = await Account.findByIdAndUpdate(accountId,{role_id: roleId, updatedBy: updatedId}, {new: true, runValidators: true})
         .populate('role_id','title avatar permissions')
-        .select("fullName");
+        .populate('updatedBy','fullName email')
+        .select("fullName email role_id updatedBy");
         if(!account){
             res.status(404).json({message: "Không tìm thấy tài khoản tương ứng"});
             return;

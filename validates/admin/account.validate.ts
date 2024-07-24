@@ -60,8 +60,6 @@ export const changeRoles = async (req: Request, res: Response, next: NextFunctio
         next(error)
     }
 } 
-
-
 export const changeMulti = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
     const types: any[] = [{deleted: true}, {deleted: false}, {status: "active"},{status: "inactive"}] 
     if(!types.includes(req.body.type)){

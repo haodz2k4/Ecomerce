@@ -10,7 +10,9 @@ interface Account {
     password: string,
     token: string,
     deleted: boolean,
-    status: string
+    status: string,
+    createdBy: Schema.Types.ObjectId,
+    updatedBy: Schema.Types.ObjectId
 }
 const accountSchema = new Schema<Account>({
     fullName: {
@@ -36,6 +38,14 @@ const accountSchema = new Schema<Account>({
     password: {
         type: String,
         required: true
+    },
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'account'
+    },
+    updatedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'account'
     },
     token: String, 
     deleted: {
