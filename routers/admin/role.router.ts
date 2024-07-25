@@ -6,7 +6,10 @@ const upload = multer();
 import {uploadSingle} from "../../middlewares/admin/uploadCloud.middlewares";
 //validate
 import * as validate from "../../validates/admin/role.validate";
+//middleware 
+import { createLog } from './../../middlewares/admin/logger.middlware';
 router.get("/",controller.index);
-router.post("/add",upload.single('thumbnail'),uploadSingle,validate.add,controller.add);
-router.patch("/edit/:id",validate.edit,controller.edit);
+router.post("/add",upload.single('thumbnail'),uploadSingle,createLog('create'),validate.add,controller.add);
+router.patch("/edit/:id",validate.edit,createLog('update'),controller.edit);
+router.patch("/delete/:id",createLog('delete'),controller.deleteRole)
 export default router;

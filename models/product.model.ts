@@ -14,7 +14,11 @@ interface Product {
     slug: string,
     status: ("active" | "inactive"),
     createdAt: Date,
-    updatedAt: Date
+    updatedAt: Date,
+    createdBy: Schema.Types.ObjectId,
+    updatedBy: Schema.Types.ObjectId,
+    deletedBy: Schema.Types.ObjectId
+    
 }
 const productSchema = new Schema<Product>({
     title: {
@@ -49,6 +53,18 @@ const productSchema = new Schema<Product>({
         type: String,
         enum: ["active","inactive"]
     },
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'account'
+    },
+    deletedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'account'
+    },
+    updatedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'account'
+    }
 },{
     timestamps: true
 }) 

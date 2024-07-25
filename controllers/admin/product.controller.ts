@@ -73,10 +73,11 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
 //[PATCH] "/admin/products/change-status/:status/:id"
 export const changeStatus = async (req: Request, res: Response): Promise<void>  =>{
     const status = req.params.status;
-    const id = req.params.id;
+    const id = req.params.id; 
+    const createdBy = req.body.createdBy;
 
     try {
-        const product = await Product.findByIdAndUpdate(id, {status},{new: true, runValidators: true}).select("status");
+        const product = await Product.findByIdAndUpdate(id, {status,createdBy},{new: true, runValidators: true}).select("status");
         if(!product){
             res.status(404).json({message: "Không tìm thấy sản phẩm có id là: "+id});
             return;
@@ -123,8 +124,9 @@ export const edit = async (req: Request, res: Response) :Promise<void> =>{
 export const softDelete = async (req: Request, res: Response) :Promise<void>  =>{
 
     const id = req.params.id;
+    const updatedBy = req.body.updatedBy;
     try {
-        const product = await Product.findByIdAndUpdate(id, {deleted: true},{new: true}).select("deleted");
+        const product = await Product.findByIdAndUpdate(id, {deleted: true, updatedBy},{new: true}).select("deleted");
         if(!product){
             res.status(404).json({message: `Sản phẩm có id: ${id} không tồn tại`});
             return;
@@ -186,10 +188,11 @@ export const restore = async (req: Request, res: Response) :Promise<void> =>{
     }
 } 
 //[PATCH] "/admin/products/garbages/restore/all"
-export const restoreAll = async (req: Request, res: Response) :Promise<void>  =>{
+export const restoreAll = async (req: Request, res: Response) :Promise<void>  =>{ 
+    const updatedBy = req.body.updatedBy; 
     try { 
         const result = await Product.updateMany(
-            {deleted: true }, {deleted: false}
+            {deleted: true,updatedBy }, {deleted: false}
         ).select("deleted")
 
         if(result.modifiedCount === 0){
@@ -252,13 +255,14 @@ export const detail = async (req: Request, res: Response) :Promise<void>  =>{
 export const changeMulti = async (req: Request, res: Response) :Promise<void> =>{
     const type = req.params.type;
     const ids = req.body;
+    const createdBy = req.body.createdBy;
     const products:any[] = [];
     try { 
         if(type === "position"){
             for(const item of ids){
                 const [id, position] = item.split("-");
                 
-                const product = await Product.findByIdAndUpdate(id, {position},{runValidators: true, new: true}).select(type);
+                const product = await Product.findByIdAndUpdate(id, {position,createdBy},{runValidators: true, new: true}).select(type);
                 products.push(product);
             }
             res.status(200).json({message: "Thay đổi vị trí nhiều Sản phẩm thành công",products})
@@ -266,7 +270,7 @@ export const changeMulti = async (req: Request, res: Response) :Promise<void> =>
             const [key, value] = type.split("-");
             for(const item of ids){
                 const product = await Product.findByIdAndUpdate(item, 
-                    {[key]: value},
+                    {[key]: value,createdBy},
                     {runValidators: true, new: true}).select(key);
                 products.push(product)
             }

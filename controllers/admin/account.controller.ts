@@ -142,4 +142,4 @@ export const deleteAccount = async (req: Request, res: Response) :Promise<void> 
             res.status(500).json({message: "Lỗi không xác định"})
         }
     }
-}
+}   

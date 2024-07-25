@@ -12,7 +12,10 @@ interface Category {
     children: Category[],
     createdAt: Date,
     updatedAt: Date,
-    slug: string 
+    slug: string,
+    createdBy: Schema.Types.ObjectId,
+    updatedBy: Schema.Types.ObjectId,
+    deletedBy: Schema.Types.ObjectId
 
 }
 
@@ -47,6 +50,18 @@ const categorySchema = new Schema<Category>({
     slug: {
         type: String
     },
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'account'
+    },
+    deletedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'account'
+    },
+    updatedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'account'
+    }
 },{
     timestamps: true
 })

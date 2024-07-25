@@ -34,8 +34,9 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
 export const changeStatus = async (req: Request, res: Response) :Promise<void> =>{
     const status = req.params.status;
     const id = req.params.id; 
+    const updatedBy = req.body.updatedBy;
     try {
-        const category = await Category.findByIdAndUpdate(id,{status}, {new: true, runValidators: true}).select("status");
+        const category = await Category.findByIdAndUpdate(id,{status,updatedBy}, {new: true, runValidators: true}).select("status updatedBy");
         if(!category){
             res.status(404).json({message: `Danh mục có id: ${id} không hợp lệ`});
             return;
@@ -123,8 +124,9 @@ export const edit = async (req: Request, res: Response) :Promise<void> =>{
 export const softDelete = async (req: Request, res: Response) :Promise<void>  =>{
 
     const id = req.params.id;
+    const updatedBy = req.body.updatedBy
     try {
-        const category = await Category.findByIdAndUpdate(id, {deleted: true},{new: true}).select("deleted");
+        const category = await Category.findByIdAndUpdate(id, {deleted: true,updatedBy},{new: true}).select("deleted updatedBy");
         if(!category){
             res.status(404).json({message: `Danh mục có id: ${id} không tồn tại`});
             return;
@@ -163,9 +165,11 @@ export const garbages = async (req: Request, res: Response) :Promise<void>  =>{
 //[PATCH] "/admin/categories/garbages/restore/:id"
 export const restore = async (req: Request, res: Response) :Promise<void> =>{
     const id = req.params.id;
-
+    const updatedBy = req.body.updatedBy;
     try {
-        const category = await Category.findByIdAndUpdate(id, {deleted: false},{new: true}).select("deleted");
+
+        updatedBy 
+        const category = await Category.findByIdAndUpdate(id, {deleted: false, updatedBy},{new: true}).select("deleted");
         if(!category){
             res.status(404).json({message: `Danh mục có: ${id} không tồn tại`});
             return;
@@ -181,9 +185,11 @@ export const restore = async (req: Request, res: Response) :Promise<void> =>{
 } 
 //[PATCH] "/admin/categories/garbages/restore/all"
 export const restoreAll = async (req: Request, res: Response) :Promise<void>  =>{
+
+    const updatedBy = req.body.updatedBy; 
     try { 
         const result = await Category.updateMany(
-            {deleted: true }, {deleted: false}
+            {deleted: true }, {deleted: false, updatedBy}
         ).select("deleted")
 
         if(result.modifiedCount === 0){
@@ -245,13 +251,14 @@ export const detail = async (req: Request, res: Response) :Promise<void>  =>{
 export const changeMulti = async (req: Request, res: Response) :Promise<void> =>{
     const type = req.params.type;
     const ids = req.body;
+    const createdBy = req.body.createdBy;
     const categories:any[] = [];
     try { 
         if(type === "position"){
             for(const item of ids){
                 const [id, position] = item.split("-");
                 
-                const category = await Category.findByIdAndUpdate(id, {position},{runValidators: true, new: true}).select(type);
+                const category = await Category.findByIdAndUpdate(id, {position, createdBy},{runValidators: true, new: true}).select(type);
                 categories.push(category);
             }
             res.status(200).json({message: "Thay đổi vị trí nhiều danh mục thành công",categories})

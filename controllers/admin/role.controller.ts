@@ -63,4 +63,25 @@ export const edit = async (req: Request, res: Response) =>{
             res.status(500).json({message: "Lỗi không xác định"})
         }
     }
+} 
+//[PATCH] "/admin/roles/delete/:id"
+export const deleteRole = async (req: Request, res: Response) =>{ 
+    const deletedBy = req.body.deletedBy;
+    try {
+        const id = req.params.id;
+    
+        const role = await Role.findByIdAndUpdate(id,{deleted: true, deletedBy},{new: true}).select("deleted deletedBy");
+        if(!role){
+            res.status(404).json({message: "Vai trò không hợp lệ"});
+            return;
+        }
+        res.status(200).json({message: "Xóa vai trò thành công", role})
+    } catch (error) {
+        console.error(error);
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi không xóa được vai trò", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"});
+        }
+    }
 }

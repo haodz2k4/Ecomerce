@@ -2,7 +2,10 @@ import { model, Schema, Types } from "mongoose";
 interface Inventory {
     product_id: Schema.Types.ObjectId,
     quantity: number,
-    deleted: boolean
+    deleted: boolean,
+    createdBy: Schema.Types.ObjectId,
+    updatedBy: Schema.Types.ObjectId,
+    deletedBy: Schema.Types.ObjectId
 }
 
 const inventorySchema = new Schema<Inventory>({
@@ -21,6 +24,18 @@ const inventorySchema = new Schema<Inventory>({
     deleted: {
         type: Boolean,
         default: false
+    },
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'account'
+    },
+    deletedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'account'
+    },
+    updatedBy: {
+        type: Schema.Types.ObjectId,
+        ref: 'account'
     }
 })
 

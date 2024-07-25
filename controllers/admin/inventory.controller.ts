@@ -32,15 +32,16 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
         }
     }
 } 
-//[PATCH] "/admin/inventories/update"
-export const update = async (req: Request, res: Response) :Promise<void> =>{
+//[PATCH] "/admin/inventories/add/multi"
+export const addMultipleInventory = async (req: Request, res: Response) :Promise<void> =>{
     const body = req.body;
+    const updatedBy = req.body.updatedBy;
     try {
         const inventories: any[] = [];
 
-        for(const item of body){
+        for(const item of body){ 
             const id = item.id;
-            const quantity = parseInt(item.quantiy); 
+            const quantity = parseInt(item.quantity); 
             const inventory = await Inventory.findById(id).select("quantity"); 
             if(!inventory){
                 res.status(404).json({message: "Không tìm thấy id: "+ item.id});
@@ -48,10 +49,10 @@ export const update = async (req: Request, res: Response) :Promise<void> =>{
             }
             const result = inventory.quantity + quantity; 
             inventory.quantity = result;
-
+            inventory.updatedBy = updatedBy
             await inventory.save();
 
-            inventories.push(inventory  );
+            inventories.push(inventory);
         }
         res.status(200).json({message: "Cập nhật thành công",inventories })
     } catch (error) {
@@ -66,10 +67,11 @@ export const update = async (req: Request, res: Response) :Promise<void> =>{
 //[PATCH] "/admin/invenetories/delete/:id"
 export const deleteInventory = async (req: Request, res: Response) :Promise<void> =>{
     const id = req.params.id;
+    const deletedBy = req.body.deletedBy;
     try {
         const inventory = await Inventory.findByIdAndUpdate({
             _id: id
-        },{deleted: true}, {new: true, runValidators: true}).select("deleted");
+        },{deleted: true,deletedBy}, {new: true, runValidators: true}).select("deleted deletedBy");
         if(!inventory){
             res.status(404).json({message: "Không tìm thấy kho hàng tương ứng"});
             return;
