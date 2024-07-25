@@ -12,7 +12,7 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
         const account = await Account.findOne({
             deleted: false,
             token 
-        });
+        }).populate('role_id')
     
         if(!account){
             res.status(401).json({message: "Token không tồn tại"});
