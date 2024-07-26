@@ -28,4 +28,18 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
             res.status(500).json({message: "Lỗi không xác định"})
         }
     }
+}  
+export const requirePermission = (name: string) =>{ 
+
+    
+    return async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
+        const account = res.locals.account;
+        const permission = account.role_id.permissions;
+        if(!permission.includes(name)){
+            res.status(403).json({message: "Bạn không nhóm quyền tương ứng"});
+            return;
+        } 
+
+        next();
+    }
 }
