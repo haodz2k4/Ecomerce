@@ -4,6 +4,7 @@ interface Find {
     deleted: boolean,
     status?: string,
     title?: RegExp,
+    highlighted?: string
     [key: string]: any
 } 
 type sortType = "asc" | "desc"

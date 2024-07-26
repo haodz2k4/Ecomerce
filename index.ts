@@ -29,7 +29,9 @@ import bodyParser from "body-parser";
 app.use(bodyParser.json())
 //admin router
 import adminRouter from './routers/admin/index.router';
-adminRouter(app);
+adminRouter(app); 
+import clientRouter from './routers/clients/index.router';
+clientRouter(app);
 //port 
 const port = process.env.PORT || 5000; 
 app.listen(port, () =>{

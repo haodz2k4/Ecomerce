@@ -6,6 +6,7 @@ interface Product {
     title: string,
     product_category_id: Schema.Types.ObjectId,
     description: string,
+    highlighted: string,
     avatar: string,
     price: number,
     discountPercentage: number,
@@ -40,6 +41,10 @@ const productSchema = new Schema<Product>({
     deleted: {
         type: Boolean,
         default: false,
+    },
+    highlighted: {
+        type: String,
+        default: "0" 
     },
     position: {
         type: Number,
