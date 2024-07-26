@@ -26,6 +26,17 @@ export const edit = (req: Request, res: Response,next: NextFunction) :void =>{
             return;
         }
     }
+    const password = req.body.password;
+    if(typeof password === 'string'){
+        res.status(400).json({message: "bạn không được chỉnh sửa mật khẩu trong phần cập nhật thông tin người dùng"})
+        return; 
+    }
+
+    const token = req.body.token;
+    if(typeof token === 'string'){
+        res.status(400).json({message: "bạn không được chỉnh sửa Token"});
+        return;
+    }
 
 
 

@@ -4,12 +4,22 @@ import {config} from 'dotenv';
 import cors from "cors";
 const app: Express = express();
 
-//cors 
-app.use(cors())
-//end cors 
 //dotenv 
 config();
 //end dotenv 
+//session 
+import session from "express-session";
+app.use(session({
+    secret: process.env.SECRET_KEY as string, 
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60000 },
+    
+}));
+//cors 
+app.use(cors())
+//end cors 
+
 //connect database 
 const urlDatabase = process.env.URL_DATABASE;
 getConnection(urlDatabase) 
