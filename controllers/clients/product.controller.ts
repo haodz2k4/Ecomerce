@@ -11,14 +11,12 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
 
     try {
 
-        const find = buildFindQuery(req);
-        find.status = "active"; 
-        const counts = await Product.countDocuments(find);
+        const counts = await Product.countDocuments({deleted: false, status: "active"});
         const pagination = getPagination(req, counts, 30);
        
         const products = await Product.aggregate([
             {
-                $match: find
+                $match: {deleted: false, status: "active"}
             },
             {
                 $lookup: {

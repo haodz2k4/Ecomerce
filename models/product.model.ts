@@ -18,7 +18,8 @@ interface Product {
     updatedAt: Date,
     createdBy: Schema.Types.ObjectId,
     updatedBy: Schema.Types.ObjectId,
-    deletedBy: Schema.Types.ObjectId
+    deletedBy: Schema.Types.ObjectId,
+    [key: string]: any
     
 }
 const productSchema = new Schema<Product>({
@@ -92,4 +93,4 @@ productSchema.post('save',async function(doc) {
     })
     await inventory.save();
 })
-export default model("product",productSchema,"products");
+export default model<Product>("product",productSchema,"products");
