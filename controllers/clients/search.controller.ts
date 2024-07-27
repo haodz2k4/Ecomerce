@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { buildFindQuery, buildSorting } from "../../helpers/search.helper";
+import { buildFindQuery, buildSorting, buildSuggestions } from "../../helpers/search.helper";
 import { Error } from "mongoose";
 import Product from "../../models/product.model";
 import Category from "../../models/category.model";
@@ -10,6 +10,7 @@ export const search = async (req: Request, res: Response) :Promise<void> =>{
     const defaultLimit = 20;
     try { 
         const find = buildFindQuery(req);
+        find.status = "active"
         const counts = await Product.countDocuments(find);
         const pagination = getPagination(req,counts,defaultLimit)
         const products = await Product.aggregate([
@@ -54,3 +55,20 @@ export const search = async (req: Request, res: Response) :Promise<void> =>{
     }
     
 } 
+//[GET] "/search/suggestions"
+export const suggestions = async (req: Request, res: Response) :Promise<void> => {
+    try {
+        const find = buildSuggestions(req);
+        find.status = "active"
+        const products = await Product.find(find).limit(5).select("title avatar thumbnail")
+        res.json({products});
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi truy vấn dữ liệu", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"});
+        }
+    }
+
+}

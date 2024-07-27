@@ -4,7 +4,9 @@ interface Find {
     deleted: boolean,
     status?: string,
     title?: RegExp,
-    highlighted?: string
+    highlighted?: string,
+    minValue?: number,
+    maxValue?: number,
     [key: string]: any
 } 
 type sortType = "asc" | "desc";
@@ -23,6 +25,13 @@ export const buildFindQuery = (req: Request, name: string = "title"): Find => {
 
     if (typeof status === "string") {
         find.status = status;
+    } 
+
+    //range price
+    const minValue = req.query.minValue;
+    const maxValue = req.query.maxValue;
+    if(typeof minValue === 'string' && typeof maxValue === 'string'){ 
+        find.price = {$lte: parseInt(maxValue), $gte: parseInt(minValue)}
     }
 
     return find;
