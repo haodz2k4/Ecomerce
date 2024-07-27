@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-
+import { compare } from "bcrypt";
 import User from "../../models/user.model";
 import { Error } from "mongoose";
+
 //[POST] "/users/registers"
 export const register = async (req: Request, res: Response) :Promise<void> =>{
     const body = req.body;
@@ -23,3 +24,27 @@ export const register = async (req: Request, res: Response) :Promise<void> =>{
         }
     }
 } 
+//[POST] "/users/login"
+export const login = async (req: Request, res: Response) :Promise<void> =>{
+    const password = req.body.password;
+    const infoLogin = res.locals.infoLogin;
+    try { 
+        
+
+        const user = await User.findOne(infoLogin).select("fullName avatar email phone token password");
+        if(!user){
+            res.status(401).json({message: "Tài khoản không tồn tại"});
+            return;
+        }
+        const isComparePassword = await compare(password,user.password);
+        if(!isComparePassword){
+            res.status(401).json({message: "Mật khẩu không đúng"});
+            return; 
+        }
+    
+        res.status(200).json({message: "Đăng nhập thành công", user})
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({message: "Lỗi không xác định"})
+    }
+}
