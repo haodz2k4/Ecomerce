@@ -7,7 +7,7 @@ interface Find {
     highlighted?: string
     [key: string]: any
 } 
-type sortType = "asc" | "desc"
+type sortType = "asc" | "desc";
 interface Sort {
     [key: string]: sortType
 }
@@ -30,9 +30,9 @@ export const buildFindQuery = (req: Request, name: string = "title"): Find => {
 export const buildSorting = (req: Request,defaultSort: Sort):Sort =>{ 
     let sort: Sort = {};
     const sortKey = req.query.sortKey;
-    const valueKey = req.query.valueKey;
+    const valueKey = req.query.valueKey as sortType;
 
-    if(typeof sortKey === 'string' && (valueKey === "asc" || valueKey === "desc")){
+    if(typeof sortKey === 'string' && valueKey){
         sort[sortKey] = valueKey
     } else{
         sort = {...defaultSort}
