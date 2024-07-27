@@ -63,3 +63,23 @@ export const login = async (req: Request, res: Response, next: NextFunction) :Pr
     res.locals.infoLogin = infoLogin;
     next();
 }
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
+
+    const email = req.body.email;
+    if(!email){
+        res.status(400).json({message: "Vui lòng gửi email"});
+        return;
+    }
+
+    try {
+        const isExists = User.exists({email});
+        if(!isExists){
+            res.status(400).json({message: "Email không tồn tại"});
+            return;
+        }
+    
+        next();
+    } catch (error) {
+        next(error);
+    }
+}

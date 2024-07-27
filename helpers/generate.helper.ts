@@ -10,3 +10,12 @@ export const generateString = (length: number): string => {
 
   return result;
 }
+
+export const generateRandomNumber = (length: number) =>{
+  const NumberCharater = '0123456789';
+  let result = "";
+  for(let i = 0; i < length; i++){
+    result += NumberCharater.charAt(Math.floor(Math.random() * NumberCharater.length));
+  }
+  return result;
+}
