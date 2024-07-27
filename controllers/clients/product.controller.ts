@@ -2,6 +2,7 @@ import { getPagination } from './../../helpers/pagination.helper';
 import { buildFindQuery, buildSorting } from './../../helpers/search.helper';
 import { Request, Response } from "express";
 import Product from "../../models/product.model";
+import Category from "../../models/category.model";
 import { Error } from "mongoose";
 //[GET] "/products"
 export const index = async (req: Request, res: Response) :Promise<void> =>{
@@ -88,6 +89,70 @@ export const detail = async (req: Request, res: Response) :Promise<void> =>{
             return;
         }else{
             res.status(500).json({message: "Lỗi không xác định"});
+        }
+    }
+}
+//[GET] "/products/:slug"
+export const category = async (req: Request, res: Response) :Promise<void> =>{
+    const slug = req.params.slug;
+
+    try {
+        const products = await Product.aggregate([ 
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'product_category_id',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            {
+                $match: {deleted: false, status: "active",'category.slug': slug}
+            },
+            {
+                $unwind: {
+                    path: '$category',
+                    preserveNullAndEmptyArrays: false
+                }
+            },
+            {
+                $lookup: {
+                    from: 'inventories',
+                    localField: '_id',
+                    foreignField: 'product_id',
+                    as: 'inventory'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$inventory',
+                    preserveNullAndEmptyArrays: true 
+                }
+            },
+            {
+                $addFields: {
+                    quantity: { $ifNull: ["$inventory.quantity", 0] } 
+                }
+            },
+            {
+                $project: {
+                    title: 1,
+                    avatar: 1,
+                    price: 1,
+                    discountPercentage: 1,
+                    slug: 1,
+                    quantity: 1,
+                    position: 1
+                }
+            }
+        ]) 
+
+        res.json({products})
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi truy vấn dababase", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
         }
     }
 }
