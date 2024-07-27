@@ -1,8 +1,10 @@
 import { getPagination } from './../../helpers/pagination.helper';
 import { buildFindQuery, buildSorting } from './../../helpers/search.helper';
 import { Request, Response } from "express";
+//model
 import Product from "../../models/product.model";
-import Category from "../../models/category.model";
+import Category from "../../models/category.model"; 
+import Inventory from "../../models/inventory.model";
 import { Error } from "mongoose";
 //[GET] "/products"
 export const index = async (req: Request, res: Response) :Promise<void> =>{
@@ -75,13 +77,16 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
 export const detail = async (req: Request, res: Response) :Promise<void> =>{
     const slug = req.params.slug;
 
-    try {
+    try { 
         const product = await Product.findOne({slug: slug, deleted: false, status: "active"});
+        
         if(!product){
             res.status(404).json({message: "Sản phẩm không tồn tại"});
             return;
         }
-        res.status(200).json({product})
+        const category = await Category.findById(product.product_category_id).select('title thumbnail');
+        const inventory = await Inventory.findOne({product_id: product.id}).select('quantity')
+        res.status(200).json({product,category,inventory})
     } catch (error) {
         console.error(error)
         if(error instanceof Error){
@@ -155,4 +160,5 @@ export const category = async (req: Request, res: Response) :Promise<void> =>{
             res.status(500).json({message: "Lỗi không xác định"})
         }
     }
-}
+} 
+

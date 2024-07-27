@@ -56,6 +56,7 @@ const productSchema = new Schema<Product>({
     },
     status: {
         type: String,
+        default: "active",
         enum: ["active","inactive"]
     },
     createdBy: {
