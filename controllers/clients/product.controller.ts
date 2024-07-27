@@ -43,7 +43,8 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
                     discountPercentage: 1,
                     avatar: 1,
                     quantity: 1,
-                    position: 1
+                    slug: 1,
+                    position: 1,
                 }
             },
             {
@@ -64,6 +65,27 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
         console.error(error);
         if(error instanceof Error){
             res.status(500).json({message: "Lỗi khi thực hiện truy vấn cơ sở dữ liệu", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"});
+        }
+    }
+}
+//[GET] "/products/detail/:slug"
+export const detail = async (req: Request, res: Response) :Promise<void> =>{
+    const slug = req.params.slug;
+
+    try {
+        const product = await Product.findOne({slug: slug, deleted: false, status: "active"});
+        if(!product){
+            res.status(404).json({message: "Sản phẩm không tồn tại"});
+            return;
+        }
+        res.status(200).json({product})
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi thực hiện truy vấn", error: error.message});
+            return;
         }else{
             res.status(500).json({message: "Lỗi không xác định"});
         }
