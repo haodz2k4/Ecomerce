@@ -9,7 +9,7 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
     } 
 
     const token = req.headers.authorization.split(" ")[1]; 
-    const encode: any = jwt.verify(token,process.env.JWT_TOKEN as string);
+    const encode: any = jwt.verify(token,process.env.JWT_SECRET as string);
     const user = await User.findById(encode?.userId);
     if(!user){
         res.status(401).json({message: "Token của bạn gửi không hợp lệ"});

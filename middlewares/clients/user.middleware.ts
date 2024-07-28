@@ -7,7 +7,8 @@ export const user = async (req: Request, res: Response, next: NextFunction) :Pro
         next();
         return;
     }
-    const token = req.headers.authorization.split(" ")[0];
+    const token = req.headers.authorization.split(" ")[1];
+    console.log(process.env.JWT_SECRET)
     const encode: any = jwt.verify(token,process.env.JWT_SECRET as string);
     const user = await User.findById(encode.userId);
 

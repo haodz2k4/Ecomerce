@@ -41,7 +41,7 @@ export const login = async (req: Request, res: Response) :Promise<void> =>{
         
 
         const user = await User.findOne(infoLogin).select("fullName avatar email phone password");
-        const token = jwt.sign({userId: user?.id}, process.env.SECRET_KEY as string, {expiresIn: '15m'}) 
+        const token = jwt.sign({userId: user?.id}, process.env.JWT_SECRET as string, {expiresIn: '15m'}) 
         if(!user){
             res.status(401).json({message: "Tài khoản không tồn tại"});
             return;
@@ -137,5 +137,17 @@ export const resetPassword = async (req: Request, res: Response) :Promise<void> 
         }else{
             res.status(500).json({message: "Lỗi không xác định"})
         }
+    }
+}  
+//[GET] "/users/profiles"
+export const profiles = async (req: Request, res: Response) :Promise<void> => {
+
+    const user = res.locals.user;
+
+    try {
+        res.json({user});
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({message: "Lỗi không xác định"})
     }
 }

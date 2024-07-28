@@ -71,4 +71,4 @@ export const suggestions = async (req: Request, res: Response) :Promise<void> =>
         }
     }
 
-}
+} 
