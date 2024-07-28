@@ -10,6 +10,7 @@ import jwt from "jsonwebtoken";
 import ForgotPassword from "../../models/forgot-password.model";
 import User from "../../models/user.model";
 import Favorite from "../../models/favorite.model";
+import Address from "../../models/address.model";
 //helper
 import { sendMessage } from './../../helpers/sendMail.helper';
 import { generateRandomNumber } from "../../helpers/generate.helper";
@@ -195,4 +196,24 @@ export const toggleFavorite  = async (req: Request, res: Response) :Promise<void
             res.status(500).json({message: "Lỗi không xác định"});
         }
    }
+}
+//[POST] "/users/address/add"
+export const addAddress = async (req: Request, res: Response) :Promise<void> =>{
+
+    const user_id = res.locals.user.id ;
+    const body = req.body;
+
+    try {
+        const address = new Address({user_id, ...body});
+        await address.save();
+        res.status(200).json({message: "Thêm địa chỉ thành công", address});
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi thêm địa chỉ", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+
+        
 }

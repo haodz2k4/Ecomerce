@@ -12,4 +12,5 @@ router.post("/password/reset",controller.resetPassword);
 router.get("/profiles",requireAuth,controller.profiles);
 router.get("/favorites",requireAuth,controller.favorites);
 router.post("/favorites/add/:productId",requireAuth,validate.addFavorite,controller.toggleFavorite );
+router.post("/address/add",requireAuth,controller.addAddress)
 export default router;
