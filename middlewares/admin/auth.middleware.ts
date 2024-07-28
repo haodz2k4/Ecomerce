@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Error } from "mongoose";
-import Account from "../../models/account.model";
+import Account from "../../models/account.model"; 
+import jwt from "jsonwebtoken";
 export const requireAuth = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
 
     try {
@@ -8,10 +9,12 @@ export const requireAuth = async (req: Request, res: Response, next: NextFunctio
             res.status(401).json({message: "Vui lòng gửi kèm token"});
             return;
         } 
-        const token = req.headers.authorization.split(" ")[1];
+        const token = req.headers.authorization.split(" ")[1]; 
+        const encode: any = jwt.verify(token,process.env.JWT_SECRET as string); 
+
         const account = await Account.findOne({
             deleted: false,
-            token 
+            _id: encode.accountId 
         }).populate('role_id')
     
         if(!account){

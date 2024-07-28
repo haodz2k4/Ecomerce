@@ -8,7 +8,6 @@ interface Account {
     email: String,
     role_id: Schema.Types.ObjectId,
     password: string,
-    token: string,
     deleted: boolean,
     status: string,
     createdBy: Schema.Types.ObjectId,
@@ -52,7 +51,6 @@ const accountSchema = new Schema<Account>({
         type: Schema.Types.ObjectId,
         ref: 'account'
     },
-    token: String, 
     deleted: {
         type: Boolean,
         default: false
@@ -73,7 +71,6 @@ accountSchema.pre('save',async function (next) {
         return;
     } 
     try {
-        this.token = generateString(30);
         this.password = await hash(this.password,10);
         next();
     } catch (error) {
