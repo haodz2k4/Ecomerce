@@ -4,6 +4,7 @@ import { isValidBirthDate } from './../../utils/date.utils';
 
 import User from '../../models/user.model';
 import Product from '../../models/product.model';
+import { compare } from "bcrypt";
 interface infoLogin {
     email?: string,
     phone?: string
@@ -96,4 +97,27 @@ export const addFavorite = async (req: Request, res: Response, next: NextFunctio
 
     next();
     
+}
+
+export const changePassword =  async (req: Request, res: Response, next: NextFunction) :Promise<void> => {
+    const currentPassword = req.body.currentPassword;
+    const newPassword = req.body.newPassword;
+    const repeatPassword = req.body.repeatPassword;
+    const user = res.locals.user;
+    try {
+        const isExists = await compare(currentPassword,user.password);
+        if(!isExists){
+            res.status(400).json({message: "Mật khẩu không đúng"});
+            return; 
+        }
+    
+        const isValid = (newPassword === repeatPassword ? true : false);
+        if(!isValid){
+            res.status(400).json({message: "Mật khẩu lặp lại không khớp"});
+            return; 
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
 }

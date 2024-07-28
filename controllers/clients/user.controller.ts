@@ -228,11 +228,29 @@ export const changeDefaultAddress = async (req: Request, res: Response) :Promise
     try { 
         await Address.updateMany({user_id: userId},{defaultAdrress: false})
         const address = await Address.findOneAndUpdate({_id: id, user_id: userId},{defaultAdrress: true},{new: true});
-
         res.status(200).json({message: "Cài đặt địa chỉ mặc định thành công", address});
     } catch (error) {
         if(error instanceof Error){
             res.status(500).json({message: "Lỗi khi cập nhật địa chỉ mặc định", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+}
+//[PATCH] "/users/password/change"
+export const changePassword = async (req: Request, res: Response) :Promise<void> =>{
+    const newPassword = req.body.newPassword; 
+    const userId = res.locals.user.id;
+
+    try {
+        const password = await hash(newPassword,10);
+        const infoUpdate = await User.updateOne({_id: userId},{password});
+        if(infoUpdate.modifiedCount === 1){
+            res.status(200).json({message: "Cập nhật mật khẩu thành công"})
+        }
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi cập nhật mật khẩu", error: error.message})
         }else{
             res.status(500).json({message: "Lỗi không xác định"})
         }
