@@ -9,24 +9,37 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
     let userId = res.locals.user.id;
     userId = Types.ObjectId.createFromHexString(userId)
     try {
-        const carts = await Cart.aggregate([
+        const cartItems = await CartItem.aggregate([
             {
                 $lookup: {
-                    from: 'cart-items',
-                    localField: '_id',
-                    foreignField: 'cart_id',
-                    as: 'product'
+                    from: 'carts',
+                    localField: 'cart_id',
+                    foreignField: '_id',
+                    as: 'cart'
                 }
             },
             {
-                $match: {
-                    user_id: userId
+                $lookup: {
+                    from: 'products', 
+                    localField: 'product_id',
+                    foreignField: '_id',
+                    as: 'products'
                 }
-            }
+            },
+            {
+                $unwind: '$cart' 
+            },
+            {
+                $match: {
+                    'cart.user_id': userId
+                }
+            },
+            {$project: {'products.title': 1,'cart._id': 1,'cart.user_id': 1,'products.price': 1,'products.discountPercentage': 1,'products.thumbnail': 1,quantity: 1}}
         ])
     
-        res.json({carts})
+        res.json({cartItems})
     } catch (error) {
+        console.error(error);
         if(error instanceof Error){
             res.status(500).json({message: "Lỗi khi truy vấn dữ liệu", error: error.message})
         }else{
