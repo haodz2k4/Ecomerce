@@ -3,6 +3,7 @@ import {isEmail, isMobilePhone, isURL} from "validator";
 import { isValidBirthDate } from './../../utils/date.utils'; 
 
 import User from '../../models/user.model';
+import Product from '../../models/product.model';
 interface infoLogin {
     email?: string,
     phone?: string
@@ -82,4 +83,17 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
     } catch (error) {
         next(error);
     }
+} 
+
+export const addFavorite = async (req: Request, res: Response, next: NextFunction) :Promise<void> => {
+    const product_id = req.params.productId; 
+
+    const isExistsProduct = await Product.exists({_id: product_id});
+    if(!isExistsProduct){
+        res.status(400).json({message: "Sản phẩm không tồn tại"});
+        return; 
+    } 
+
+    next();
+    
 }

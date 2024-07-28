@@ -9,6 +9,7 @@ import jwt from "jsonwebtoken";
 //models
 import ForgotPassword from "../../models/forgot-password.model";
 import User from "../../models/user.model";
+import Favorite from "../../models/favorite.model";
 //helper
 import { sendMessage } from './../../helpers/sendMail.helper';
 import { generateRandomNumber } from "../../helpers/generate.helper";
@@ -150,4 +151,24 @@ export const profiles = async (req: Request, res: Response) :Promise<void> => {
         console.error(error);
         res.status(500).json({message: "Lỗi không xác định"})
     }
+} 
+//[GET] "/users/favorites"
+
+//[POST] "/users/favorites/add/:productId"
+export const addFavorties = async (req: Request, res: Response) :Promise<void> => {
+    const product_id = req.params.productId; 
+    const user_id = res.locals.user.id;
+
+    try {
+        const favorite = await new Favorite({user_id,product_id});
+        await favorite.save(); 
+    
+        res.status(201).json({message: "Thêm vào sản phẩm yêu thích thành công", favorite})
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi thêm vào danh sách yêu thích", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"});
+        }
+   }
 }
