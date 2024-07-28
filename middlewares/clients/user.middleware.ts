@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 import User from "../../models/user.model";
 export const user = async (req: Request, res: Response, next: NextFunction) :Promise<void> => {
 
@@ -7,12 +8,8 @@ export const user = async (req: Request, res: Response, next: NextFunction) :Pro
         return;
     }
     const token = req.headers.authorization.split(" ")[0];
-    const user = await User.findOne({token});
-
-    if(!user){
-        next();
-        return; 
-    }
+    const encode: any = jwt.verify(token,process.env.JWT_SECRET as string);
+    const user = await User.findById(encode.userId);
 
     res.locals.user = user;
 

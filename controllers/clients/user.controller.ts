@@ -40,7 +40,8 @@ export const login = async (req: Request, res: Response) :Promise<void> =>{
     try { 
         
 
-        const user = await User.findOne(infoLogin).select("fullName avatar email phone token password");
+        const user = await User.findOne(infoLogin).select("fullName avatar email phone password");
+        const token = jwt.sign({userId: user?.id}, process.env.SECRET_KEY as string, {expiresIn: '15m'}) 
         if(!user){
             res.status(401).json({message: "Tài khoản không tồn tại"});
             return;
@@ -51,7 +52,7 @@ export const login = async (req: Request, res: Response) :Promise<void> =>{
             return; 
         }
     
-        res.status(200).json({message: "Đăng nhập thành công", user})
+        res.status(200).json({message: "Đăng nhập thành công", user, token})
     } catch (error) {
         console.error(error);
         res.status(500).json({message: "Lỗi không xác định"})

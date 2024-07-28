@@ -1,6 +1,5 @@
 import {Schema, model} from "mongoose";
 import slugify from "slugify";
-import { generateString } from './../helpers/generate.helper';
 import { hash } from "bcrypt";
 import { createUniqueSlug } from "../helpers/slug.helper";
 interface User {
@@ -9,7 +8,6 @@ interface User {
     email: string,
     phone: string,
     password: string,
-    token: string,
     gender: string,
     slug: string,
     birthDate: Date,
@@ -23,7 +21,6 @@ const userSchema = new Schema<User>({
     phone: {type: String, required: true, unique: true},
     password: {type: String, required: true},
     slug: String,
-    token: String,
     gender: {type: String, required: true, enum: ['nam','nữ']},
     birthDate: Date,
     deleted: {
@@ -45,7 +42,6 @@ userSchema.pre('save',async function(next) {
         this.slug =await createUniqueSlug(model('user'),slug);
     }
     this.password = await hash(this.password,10);
-    this.token = generateString(30);
     next();
 })
 
