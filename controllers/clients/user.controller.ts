@@ -3,6 +3,7 @@ import { compare } from "bcrypt";
 import { Error } from "mongoose";
 import {readFile} from "fs-extra";
 import path from "path";
+import { hash } from "bcrypt";
 const templatePath = path.join(__dirname, '..', '..', 'templates', 'otpEmail.html'); 
 import jwt from "jsonwebtoken";
 //models
@@ -90,7 +91,7 @@ export const otpPassword = async (req: Request, res: Response) :Promise<void> =>
         }  
         const user = await User.findOne({email}).select("email phone");
 
-        const tokenUser = jwt.sign({user: user?.id},process.env.JWT_SECRET as string,{ expiresIn: '3m' });
+        const tokenUser = jwt.sign({userId: user?.id},process.env.JWT_SECRET as string,{ expiresIn: '5m' });
 
         const forgotPassword =await ForgotPassword.deleteOne({email: email})
         res.status(200).json({message: "Xác thực OTP thành công",tokenUser}); 
@@ -102,3 +103,38 @@ export const otpPassword = async (req: Request, res: Response) :Promise<void> =>
         }
     }
 } 
+//[GET] "/users/password/reset"
+export const resetPassword = async (req: Request, res: Response) :Promise<void> =>{ 
+
+    try {
+        if(!req.headers.authorization){
+            res.status(400).json({message: "Vui lòng gửi kèm Token"});
+            return; 
+        } 
+    
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
+        const exsitsUser = await User.findById(decoded.userId); 
+        if (!exsitsUser) {
+            res.status(404).json({ message: "Người dùng không tồn tại" });
+            return;
+        } 
+        const newPassword = req.body.newPassword;
+        const repeatPassword = req.body.repeatPassword;
+        if(newPassword !== repeatPassword){
+            res.status(400).json({message:"Mật khẩu nhập lại không hợp lệ"});
+            return;     
+        } 
+        const password = await hash(newPassword,10);
+        const user = await User.findByIdAndUpdate(exsitsUser.id,{password},{new: true, runValidators: true}).select("-password");
+    
+        res.status(200).json({message: "Cập nhật mật khẩu thành công", user});
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi cập nhật mật khẩu", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+}
