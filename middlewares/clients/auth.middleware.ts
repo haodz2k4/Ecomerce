@@ -1,5 +1,6 @@
     import { Request, Response, NextFunction } from "express";
     import User from "../../models/user.model";
+    import Cart from "../../models/cart.model";
     import jwt from "jsonwebtoken";
     export const requireAuth = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
         if(!req.headers.authorization){
@@ -15,6 +16,15 @@
             if(!user){
                 res.status(401).json({message: "Token của bạn gửi không hợp lệ"});
                 return;
+            } 
+            const cart = await Cart.findOne({user_id: user.id});
+            if(!cart){
+                const newCart = new Cart({user_id: user.id});
+                await newCart.save();
+                res.locals.cart = cart;
+            }else{
+                
+                res.locals.cart = cart;
             }
             res.locals.user = user;
     

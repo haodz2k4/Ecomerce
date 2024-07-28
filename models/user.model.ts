@@ -2,6 +2,7 @@ import {Schema, model} from "mongoose";
 import slugify from "slugify";
 import { hash } from "bcrypt";
 import { createUniqueSlug } from "../helpers/slug.helper";
+import Cart from "../models/cart.model";
 interface User {
     fullName: string,
     avatar: string,
@@ -45,4 +46,14 @@ userSchema.pre('save',async function(next) {
     next();
 })
 
+userSchema.post('save',async function(doc) {
+    try {
+        const cart = new Cart({
+            user_id: doc._id,
+        })
+        await cart.save();
+    } catch (error) {
+        console.error(error)
+    }
+})
 export default model<User>("user",userSchema)
