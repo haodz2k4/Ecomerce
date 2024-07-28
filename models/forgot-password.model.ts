@@ -8,7 +8,7 @@ interface ForgotPassword {
 const forgotPasswordSchema = new Schema<ForgotPassword>({
     email: {type: String, required: true},
     code: {type: String, required: true},
-    expireAt: {type: Date, expires: '1m'}
+    expireAt: {type: Date, expires: 0}
 },{
     timestamps: true
 })
