@@ -203,10 +203,14 @@ export const addAddress = async (req: Request, res: Response) :Promise<void> =>{
     const user_id = res.locals.user.id ;
     const body = req.body;
 
-    try {
-        const address = new Address({user_id, ...body});
+    try { 
+        const isExists = await Address.exists({user_id});
+        if(!isExists){
+            body.deleted = true;
+        }
+        const address = new Address({user_id, ...body,});
         await address.save();
-        res.status(200).json({message: "Thêm địa chỉ thành công", address});
+        res.status(201).json({message: "Thêm địa chỉ thành công", address});
     } catch (error) {
         if(error instanceof Error){
             res.status(500).json({message: "Lỗi khi thêm địa chỉ", error: error.message})
@@ -216,4 +220,21 @@ export const addAddress = async (req: Request, res: Response) :Promise<void> =>{
     }
 
         
+} 
+//[PATCH] "/users/address/change/default-address/:id"
+export const changeDefaultAddress = async (req: Request, res: Response) :Promise<void> =>{
+    const id = req.params.id;
+    const userId = res.locals.user.id;
+    try { 
+        await Address.updateMany({user_id: userId},{defaultAdrress: false})
+        const address = await Address.findOneAndUpdate({_id: id, user_id: userId},{defaultAdrress: true},{new: true});
+
+        res.status(200).json({message: "Cài đặt địa chỉ mặc định thành công", address});
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi cập nhật địa chỉ mặc định", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
 }
