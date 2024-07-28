@@ -10,5 +10,6 @@ router.post("/password/forgot",validate.forgotPassword,controller.forgotPassword
 router.post("/password/otp",controller.otpPassword);
 router.post("/password/reset",controller.resetPassword);
 router.get("/profiles",requireAuth,controller.profiles);
-router.post("/favorites/add/:productId",requireAuth,validate.addFavorite,controller.addFavorties)
+router.get("/favorites",requireAuth,controller.favorites);
+router.post("/favorites/add/:productId",requireAuth,validate.addFavorite,controller.toggleFavorite );
 export default router;

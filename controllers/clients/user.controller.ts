@@ -153,17 +153,41 @@ export const profiles = async (req: Request, res: Response) :Promise<void> => {
     }
 } 
 //[GET] "/users/favorites"
-
-//[POST] "/users/favorites/add/:productId"
-export const addFavorties = async (req: Request, res: Response) :Promise<void> => {
-    const product_id = req.params.productId; 
-    const user_id = res.locals.user.id;
-
-    try {
-        const favorite = await new Favorite({user_id,product_id});
-        await favorite.save(); 
+export const favorites = async (req: Request, res: Response) :Promise<void> => {
     
-        res.status(201).json({message: "Thêm vào sản phẩm yêu thích thành công", favorite})
+    const user_id = res.locals.user.id;
+    try {
+        const favorites = await Favorite.find({user_id}).populate('product_id','title avatar price discountPercentage slug');
+        
+        res.status(200).json({favorites})
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi truy vấn database", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"});
+        }
+    }
+
+
+}
+//[POST] "/users/favorites/add/:productId"
+export const toggleFavorite  = async (req: Request, res: Response) :Promise<void> => {
+    const product_id = req.params.productId; 
+    const user_id = res.locals.user.id; 
+    const objFavorite = {product_id, user_id}
+    try { 
+
+        const isExsits = await Favorite.exists(objFavorite);
+        if(isExsits){
+            await Favorite.deleteOne(objFavorite);
+            res.status(201).json({message: "Xóa khỏi sản phẩm yêu thích thành công"})
+        }else{
+            
+            const favorite = await new Favorite(objFavorite);
+            await favorite.save(); 
+        
+            res.status(201).json({message: "Thêm vào sản phẩm yêu thích thành công", favorite})
+        }
     } catch (error) {
         if(error instanceof Error){
             res.status(500).json({message: "Lỗi khi thêm vào danh sách yêu thích", error: error.message});
