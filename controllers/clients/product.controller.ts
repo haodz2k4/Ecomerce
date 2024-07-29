@@ -5,6 +5,7 @@ import { Request, Response } from "express";
 import Product from "../../models/product.model";
 import Category from "../../models/category.model"; 
 import Inventory from "../../models/inventory.model";
+import Favorite from "../../models/favorite.model";
 import { Error } from "mongoose";
 //[GET] "/products"
 export const index = async (req: Request, res: Response) :Promise<void> =>{
@@ -81,10 +82,11 @@ export const detail = async (req: Request, res: Response) :Promise<void> =>{
         if(!product){
             res.status(404).json({message: "Sản phẩm không tồn tại"});
             return;
-        }
+        } 
+        const countFavorite = await Favorite.countDocuments({product_id: product.id})
         const category = await Category.findById(product.product_category_id).select('title thumbnail');
         const inventory = await Inventory.findOne({product_id: product.id}).select('quantity')
-        res.status(200).json({product,category,inventory})
+        res.status(200).json({product,category,inventory, countFavorite})
     } catch (error) {
         console.error(error)
         if(error instanceof Error){

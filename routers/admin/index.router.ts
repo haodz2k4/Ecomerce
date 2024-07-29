@@ -9,6 +9,7 @@ import roleRouter from '../../routers/admin/role.router';
 import authRouter from './auth.router';
 import myAccountRouter from './my-account.router';
 import settingRouter from "./setting.router";
+import userRouter from "./user.router";
 //end router
 //middleware 
 import { requireAuth } from "../../middlewares/admin/auth.middleware";
@@ -24,5 +25,6 @@ export default (app: Express): void =>{
     app.use(`${path}/auth`,authRouter);
     app.use(`${path}/my-account`,requireAuth,myAccountRouter);
     app.use(`${path}/settings`,requireAuth,settingRouter)
+    app.use(`${path}/users`,requireAuth,userRouter)
 
 }
