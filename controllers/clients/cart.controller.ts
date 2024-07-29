@@ -3,6 +3,7 @@ import { Error, Types } from "mongoose";
 //models
 import Cart from "../../models/cart.model"; 
 import CartItem from "../../models/cart-item.model";
+import validator from "validator";
 //[GET] "/cart"
 export const index = async (req: Request, res: Response) :Promise<void> =>{
 
@@ -116,3 +117,24 @@ export const removeMulti = async (req: Request, res: Response) :Promise<void> =>
         }
     }
 }
+//[PATCH] "/cart/change/quantity"
+export const changeQuantity = async (req: Request, res: Response) :Promise<void> =>{
+    const id = req.body.id;
+    const quantity = parseInt(req.body.quantity)
+    try {
+        const cartItem = await CartItem.findByIdAndUpdate({_id: id},{quantity},{new: true, runValidators: true} );
+        if(!cartItem){
+            res.status(404).json({message: "Không tìm thấy sản phẩm tương ứng"});
+            return; 
+        }
+
+        res.status(200).json({message: "Cập nhật số lượng sản phẩm thành công ", cartItem})
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi thay đổi số lượng sản phẩm trong giỏ hàng", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+} 
