@@ -80,7 +80,6 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
 export const remove = async (req: Request, res: Response) :Promise<void> =>{
     const id = req.params.cartItemId;
     try {
-        console.log(id);
         const cartItem = await CartItem.deleteOne({_id: id});
         if(cartItem.deletedCount === 0){
             res.status(404).json({message: "Không có sản phẩm nào bị xóa"});
@@ -96,3 +95,24 @@ export const remove = async (req: Request, res: Response) :Promise<void> =>{
         }
     }
 } 
+//[DELETE] "/cart/remove/multi"
+export const removeMulti = async (req: Request, res: Response) :Promise<void> =>{ 
+
+    const ids = req.body.ids;
+    try {
+        const infoDelete = await CartItem.deleteMany({_id: {$in: ids}});
+        if(infoDelete.deletedCount === 0){
+            res.status(404).json({message: "Chưa có sản phẩm nào bị xóa"});
+            return; 
+        }
+        res.status(200).json({message: "Xóa nhiều sản phẩm giỏ hàng thành công", infoDelete})
+
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi xóa nhiều sản phẩm khỏi giỏ hàng", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+}
