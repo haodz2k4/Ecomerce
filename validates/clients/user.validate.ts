@@ -120,4 +120,29 @@ export const changePassword =  async (req: Request, res: Response, next: NextFun
     } catch (error) {
         next(error);
     }
+} 
+export const editProfiles = async (req: Request,res: Response, next: NextFunction) :Promise<void> =>{
+    const avatar = req.body.avatar;
+    if(typeof avatar === 'string'){
+        if(!isURL(avatar)){
+            res.status(400).json({message: "Đường dẫn Avatar không hợp lệ"});
+            return; 
+        }
+    }
+
+    const email = req.body.email;
+    if(typeof email === 'string'){
+        if(!isEmail){
+            res.status(400).json({message: "Định dạng email không hợp lệ"});
+            return; 
+        }
+    } 
+    const password = req.body.password;
+    const slug =req.body.slug;
+    if(password || slug){
+        res.status(400).json({message: "bạn không được phép chỉnh sửa thông tin: " + (password ? 'password' : 'slug' )});
+        return; 
+    }
+
+    next();
 }

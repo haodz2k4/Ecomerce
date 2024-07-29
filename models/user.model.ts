@@ -16,7 +16,7 @@ interface User {
     status: string
 }
 const userSchema = new Schema<User>({
-    fullName: {type: String, required: true},
+    fullName: {type: String, required: true, minlength: 5},
     avatar: String,
     email: {type: String, required: true, unique: true},
     phone: {type: String, required: true, unique: true},

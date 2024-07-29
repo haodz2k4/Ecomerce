@@ -106,7 +106,7 @@ export const otpPassword = async (req: Request, res: Response) :Promise<void> =>
         }
     }
 } 
-//[GET] "/users/password/reset"
+//[PATCH] "/users/password/reset"
 export const resetPassword = async (req: Request, res: Response) :Promise<void> =>{ 
 
     try {
@@ -146,13 +146,39 @@ export const profiles = async (req: Request, res: Response) :Promise<void> => {
 
     const user = res.locals.user;
 
-    try {
-        res.json({user});
+    try { 
+
+        const address = await Address.findOne({user_id: user.id, defaultAdrress: true});
+
+        res.json({user, address});
+
     } catch (error) {
         console.error(error);
         res.status(500).json({message: "Lỗi không xác định"})
     }
 } 
+//[PATCH] "/users/profiles/edit"
+export const editProfiles = async (req: Request, res: Response) :Promise<void> =>{
+    const body = req.body;
+    const id = res.locals.user.id
+    try {
+        
+        const profiles = await User.findByIdAndUpdate(id,body,{new: true, runValidators: true});
+
+        res.status(200).json({message: "Cập nhật thành công", profiles});
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            if(error.name === 'ValidationError'){
+                res.status(400).json({message: "Lỗi xác thực", error: error.message});
+            }else{
+                res.status(500).json({message: "Lỗi không thể cập nhật người dùng", error: error.message});
+            }
+        }else{
+            res.status(400).json({message: "Lỗi không xác định"});
+        }
+    }
+}
 //[GET] "/users/favorites"
 export const favorites = async (req: Request, res: Response) :Promise<void> => {
     
@@ -197,6 +223,22 @@ export const toggleFavorite  = async (req: Request, res: Response) :Promise<void
         }
    }
 }
+//[GET] "/users/address"
+export const address = async (req: Request, res: Response) :Promise<void> =>{
+
+    const user_id = res.locals.user.id;
+    try { 
+        const addresses = await Address.find({user_id});
+        res.status(200).json({addresses})
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi truy vấn cơ sở dữ liệu", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+        
+} 
 //[POST] "/users/address/add"
 export const addAddress = async (req: Request, res: Response) :Promise<void> =>{
 
