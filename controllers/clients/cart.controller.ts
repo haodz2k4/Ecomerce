@@ -23,18 +23,21 @@ export const index = async (req: Request, res: Response) :Promise<void> =>{
                     from: 'products', 
                     localField: 'product_id',
                     foreignField: '_id',
-                    as: 'products'
+                    as: 'product'
                 }
             },
             {
                 $unwind: '$cart' 
             },
             {
+                $unwind: '$product'
+            },
+            {
                 $match: {
                     'cart.user_id': userId
                 }
             },
-            {$project: {'products.title': 1,'cart._id': 1,'cart.user_id': 1,'products.price': 1,'products.discountPercentage': 1,'products.thumbnail': 1,quantity: 1}}
+            {$project: {'product.title': 1,'cart._id': 1,'cart.user_id': 1,'product.price': 1,'product.discountPercentage': 1,'product.thumbnail': 1,quantity: 1}}
         ])
     
         res.json({cartItems})
@@ -72,4 +75,24 @@ export const add = async (req: Request, res: Response) :Promise<void> =>{
             res.status(500).json({message: "Lỗi không xác định"})
         }
     }
-}
+} 
+//[DELETE] "/cart/remove/:cartItemId"
+export const remove = async (req: Request, res: Response) :Promise<void> =>{
+    const id = req.params.cartItemId;
+    try {
+        console.log(id);
+        const cartItem = await CartItem.deleteOne({_id: id});
+        if(cartItem.deletedCount === 0){
+            res.status(404).json({message: "Không có sản phẩm nào bị xóa"});
+            return;
+        }
+        res.status(200).json({message: "Xóa sản phẩm khỏi giỏ hàng thành công", cartItem});
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi xóa sản phẩm khỏi giỏ hàng", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+} 
