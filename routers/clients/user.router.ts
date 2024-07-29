@@ -15,6 +15,7 @@ router.get("/favorites",requireAuth,controller.favorites);
 router.post("/favorites/add/:productId",requireAuth,validate.addFavorite,controller.toggleFavorite);
 router.get("/address",requireAuth,controller.address);
 router.post("/address/add",requireAuth,controller.addAddress);
+router.patch("/address/edit/:id",requireAuth,controller.editAddress);
 router.patch("/address/change/default-address/:id",requireAuth,controller.changeDefaultAddress);
 router.patch("/change/password",requireAuth,validate.changePassword,controller.changePassword)
 export default router;

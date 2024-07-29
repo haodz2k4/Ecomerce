@@ -10,8 +10,8 @@ interface Address {
 
 const addressSchema = new Schema({
     user_id: {type: Schema.Types.ObjectId, required: true},
-    street: {type: String, required: true},
-    city:  {type: String, required: true},
+    street: {type: String, required: true,minlength: 5},
+    city:  {type: String, required: true,minlength: 3},
     District:  {type: String, required: true},
     defaultAdrress: {
         type: Boolean,

@@ -222,7 +222,7 @@ export const toggleFavorite  = async (req: Request, res: Response) :Promise<void
             res.status(500).json({message: "Lỗi không xác định"});
         }
    }
-}
+} 
 //[GET] "/users/address"
 export const address = async (req: Request, res: Response) :Promise<void> =>{
 
@@ -263,6 +263,26 @@ export const addAddress = async (req: Request, res: Response) :Promise<void> =>{
 
         
 } 
+//[PATCH] "/users/address/edit/:id"
+export const editAddress = async (req: Request, res: Response) :Promise<void> =>{
+    const id = req.params.id;
+    const body = req.body;
+    try { 
+        if(body.defaultAdrress === true){
+            await Address.updateOne({defaultAdrress: true},{defaultAdrress: false});
+        }
+        const address = await Address.findByIdAndUpdate(id,body,{new: true, runValidators: true});
+
+        res.status(200).json({address})
+    } catch (error) {
+        console.error(error);
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi cập nhật địa chỉ", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+}
 //[PATCH] "/users/address/change/default-address/:id"
 export const changeDefaultAddress = async (req: Request, res: Response) :Promise<void> =>{
     const id = req.params.id;
