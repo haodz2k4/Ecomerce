@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import { Error } from "mongoose";
+//model
 import User from "../../models/user.model";
+import Address from "../../models/address.model"
 //helper
 import { buildFindQuery,buildSorting } from './../../helpers/search.helper';
 import { getPagination } from './../../helpers/pagination.helper';
@@ -27,3 +29,23 @@ export const index = async  (req: Request, res: Response) :Promise<void> =>{
         }
     }
 }   
+//[GET] "/admin/users/detail/:id"
+export const detail = async (req: Request, res: Response) :Promise<void> =>{
+    const id = req.params.id;
+    
+    try {
+         const user = await User.findById(id);
+         if(!user){
+            res.status(404).json({message: "Không tìm thấy người dùng tương ứng"});
+            return;
+         }
+         const address = await Address.find({user_id: id});
+         res.status(200).json({user, address});
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi truy vấn database", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi khi cập nhật dữ liệu"})
+        }
+    }
+}
