@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import Order from "../../models/order.model";
 import OrderItem from "../../models/order-detail.model";
 export const verifyPurchase = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
-    const product_id =req.params.id;
+    const product_id =req.params.productId;
     const user_id = res.locals.user.id; 
     try {
         const order = await Order.findOne({user_id}).select("id"); 

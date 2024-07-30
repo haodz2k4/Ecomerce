@@ -165,11 +165,18 @@ export const category = async (req: Request, res: Response) :Promise<void> =>{
  
 //[POST] "/products/:id/feedback/add/" 
 export const addFeedback = async (req: Request, res: Response) :Promise<void> =>{
-    const product_id = req.params.id;
+    const product_id = req.params.productId;
     const user_id = res.locals.user.id; 
     const order_id = res.locals.user.order_id;  
-    const {rating, comment, images} = req.body;
-    try {
+    const {rating, comment, images} = req.body; 
+
+    
+    try { 
+        const isExists = await FeedBack.exists({user_id, product_id});
+        if(isExists){
+            res.status(400).json({message: "Bạn đã đánh giá sản phẩm này rồi"});
+            return;
+        }
         const feedback = new FeedBack({order_id,product_id, user_id,rating, comment, images});
         await feedback.save();
 
@@ -183,4 +190,24 @@ export const addFeedback = async (req: Request, res: Response) :Promise<void> =>
         }
     }
 
+}
+//[PATCH] "/products/:productId/feedback/edit/:feedbackId"
+export const editFeedback = async (req: Request, res: Response) :Promise<void> =>{
+    const feedback_id = req.params.feedbackId; 
+    const body = req.body;
+    try {
+        const feedback = await FeedBack.findByIdAndUpdate(feedback_id,body,{new: true, runValidators: true}); 
+        if(!feedback){
+            res.status(404).json({message: "Không tìm thấy feedback tương ứng"});
+            return;
+        }
+        res.status(200).json({message: "Cập nhật feedback thành công",feedback})
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi chỉnh sửa đánh giá", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
 }
