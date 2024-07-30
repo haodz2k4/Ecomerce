@@ -210,4 +210,25 @@ export const editFeedback = async (req: Request, res: Response) :Promise<void> =
             res.status(500).json({message: "Lỗi không xác định"})
         }
     }
+} 
+//[PATCH] "/products/:productId/feedback/delete/:feedbackId"
+export const deleteFeedback = async (req: Request, res: Response) :Promise<void> =>{
+    const feedback_id = req.params.feedbackId;
+
+    try {
+        const feedback = await FeedBack.findByIdAndUpdate(feedback_id,{deleted: true},{new: true}).select("deleted");
+        if(!feedback){
+            res.status(400).json({message: "Không tìm thấy Feedback tương ứng"});
+            return; 
+        }
+
+        res.status(200).json({message: "Xóa Feedback thành công", feedback})
+    } catch (error) {
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi Xóa đánh giá", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
 }
