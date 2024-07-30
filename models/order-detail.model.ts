@@ -6,8 +6,8 @@ interface oderDetail {
     quantity: Number
 }
 const orderDetail = new Schema<oderDetail>({
-    order_id: {type: Schema.Types.ObjectId},
-    product_id: {type: Schema.Types.ObjectId, required: true},
+    order_id: {type: Schema.Types.ObjectId,required: true, ref: 'order'},
+    product_id: {type: Schema.Types.ObjectId, required: true, ref: 'product'},
     quantity: Number
 },{
     timestamps: true
