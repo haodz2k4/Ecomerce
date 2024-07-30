@@ -113,4 +113,23 @@ export const edit = async (req: Request, res: Response) :Promise<void> =>{
             res.status(500).json({ message: "Lỗi không xác định" });
         }
     }
+} 
+//[PATCH] "/admin/users/delete/:id"
+export const deleteUser = async (req: Request, res: Response) :Promise<void> =>{
+    const id = req.params.id;
+
+    try {
+        const user = await User.findByIdAndUpdate(id, {deleted: true});
+        if(!user){
+            res.status(404).json({message: "Người dùng không tồn tại"});
+            return; 
+        }
+        res.status(200).json({message: "Xóa người dùng thành công"})
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi xóa người dùng", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
 }
