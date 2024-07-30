@@ -48,4 +48,45 @@ export const detail = async (req: Request, res: Response) :Promise<void> =>{
             res.status(500).json({message: "Lỗi khi cập nhật dữ liệu"})
         }
     }
+} 
+//[PATCH] "/admin/users/change/status/:id"
+export const changeStatus = async (req: Request, res: Response) :Promise<void> =>{
+    const id = req.params.id;
+    const status = req.body.status;
+    try {
+        const user = await User.findByIdAndUpdate(id, {status},{new: true, runValidators: true}).select("status");
+        if(!user){
+            res.status(404).json({message: "Người dùng không tồn tại"});
+            return; 
+        }
+
+        res.status(200).json({message: "Cập nhật trạng thái thành công", user})
+    } catch (error) {
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi cập nhật trạng thái", error: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi khi cập nhật dữ liệu"})
+        }
+    }
+}
+//[PATCH] "/admin/users/change/multi/:type";
+export const changeMulti = async (req: Request, res: Response) :Promise<void> =>{
+    const type = req.params.type;
+    const ids = req.body.ids; 
+    const users: any = []; 
+    const [key,value] = type.split("-")
+    try { 
+        for(const id of ids){
+            const user = await User.findByIdAndUpdate(id, {[key]: value},{new: true,runValidators: true}).select(key);
+            users.push(user);
+        }
+        res.status(200).json({message: "Cập nhật nhiều người dùng thành công",users})
+    } catch (error) {
+        console.error(error);
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi không thể không cập nhật người dùng", error: error.message})
+        }else{
+            res.status(500).json({ message: "Lỗi không xác định" });
+        }
+    }
 }
