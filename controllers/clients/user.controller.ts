@@ -11,6 +11,7 @@ import ForgotPassword from "../../models/forgot-password.model";
 import User from "../../models/user.model";
 import Favorite from "../../models/favorite.model";
 import Address from "../../models/address.model";
+import Order from "../../models/order.model";
 //helper
 import { sendMessage } from './../../helpers/sendMail.helper';
 import { generateRandomNumber } from "../../helpers/generate.helper";
@@ -147,10 +148,53 @@ export const profiles = async (req: Request, res: Response) :Promise<void> => {
     const user = res.locals.user;
 
     try { 
-
+        const orders = await Order.aggregate([
+            {
+                $lookup: {
+                    from: "order-details",
+                    localField: '_id',
+                    foreignField: 'order_id',
+                    as: 'order-items'
+                }
+            },
+            {
+                $unwind: "$order-items"
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "order-items.product_id",
+                    foreignField: "_id",
+                    as: "product"
+                }
+            },
+            {
+                $unwind: "$product"
+            },
+            {
+                $match: {
+                    user_id: user._id
+                }
+            },
+            {
+                $project: {
+                    createdAt: 1,
+                    items: {
+                        product_id: "$order-items.product_id",
+                        quantity: "$order-items.quantity",
+                        product: {
+                            title: "$product.title",
+                            avatar: "$product.avatar",
+                            price: "$product.price",
+                            discountPercentage: "$product.discountPercentage"
+                        }
+                    }
+                }
+            }
+        ]);
         const address = await Address.findOne({user_id: user.id, defaultAdrress: true});
 
-        res.json({user, address});
+        res.json({user, address, orders});
 
     } catch (error) {
         console.error(error);
