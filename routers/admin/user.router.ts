@@ -8,5 +8,6 @@ router.get("/",controller.index);
 router.get("/detail/:id",controller.detail);
 router.patch("/change/status/:id",controller.changeStatus);
 router.patch("/change/multi/:type",validates.changeMulti,controller.changeMulti);
-router.patch("/edit/:id",validates.edit,controller.edit)
+router.patch("/edit/:id",validates.edit,controller.edit);
+router.patch("/delete/:id",controller.deleteUser)
 export default router;
