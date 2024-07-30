@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Error } from "mongoose";
+import { hash } from "bcrypt";
 //model
 import User from "../../models/user.model";
 import Address from "../../models/address.model"
@@ -81,6 +82,29 @@ export const changeMulti = async (req: Request, res: Response) :Promise<void> =>
             users.push(user);
         }
         res.status(200).json({message: "Cập nhật nhiều người dùng thành công",users})
+    } catch (error) {
+        console.error(error);
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi không thể không cập nhật người dùng", error: error.message})
+        }else{
+            res.status(500).json({ message: "Lỗi không xác định" });
+        }
+    }
+} 
+//[PATCH] "/admin/users/edit/:id"
+export const edit = async (req: Request, res: Response) :Promise<void> =>{
+    const id = req.params.id;
+    const body = req.body; 
+    body.password = hash(body.password,10); 
+
+    try {
+        const user = await User.findByIdAndUpdate(id,body,{new: true, runValidators: true});
+
+        if(!user){
+            res.status(404).json({message: "Không tìm thấy người dùng"});
+            return;
+        }
+        res.status(200).json({message: "Cập nhật thành công", user});
     } catch (error) {
         console.error(error);
         if(error instanceof Error){
