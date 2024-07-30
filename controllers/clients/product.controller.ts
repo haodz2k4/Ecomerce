@@ -5,7 +5,8 @@ import { Request, Response } from "express";
 import Product from "../../models/product.model";
 import Category from "../../models/category.model"; 
 import Inventory from "../../models/inventory.model";
-import Favorite from "../../models/favorite.model";
+import Favorite from "../../models/favorite.model"; 
+import FeedBack from "../../models/feedback.model";
 import { Error } from "mongoose";
 //[GET] "/products"
 export const index = async (req: Request, res: Response) :Promise<void> =>{
@@ -161,4 +162,25 @@ export const category = async (req: Request, res: Response) :Promise<void> =>{
         }
     }
 } 
+ 
+//[POST] "/products/:id/feedback/add/" 
+export const addFeedback = async (req: Request, res: Response) :Promise<void> =>{
+    const product_id = req.params.id;
+    const user_id = res.locals.user.id; 
+    const order_id = res.locals.user.order_id;  
+    const {rating, comment, images} = req.body;
+    try {
+        const feedback = new FeedBack({order_id,product_id, user_id,rating, comment, images});
+        await feedback.save();
 
+        res.status(200).json({message: "Đánh giá sản phẩm thành công", feedback})
+    } catch (error) { 
+        console.error(error)
+        if(error instanceof Error){
+            res.status(500).json({message: "Lỗi khi thêm đánh giá vào database", error: error.message});
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+
+}
