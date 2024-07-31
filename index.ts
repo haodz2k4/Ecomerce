@@ -28,9 +28,9 @@ getConnection(urlDatabase)
 import bodyParser from "body-parser";
 app.use(bodyParser.json())
 //admin router
-import adminRouter from './routers/admin/index.router';
+import adminRouter from './v1/routers/admin/index.router';
 adminRouter(app); 
-import clientRouter from './routers/clients/index.router';
+import clientRouter from './v1/routers/clients/index.router';
 clientRouter(app);
 //port 
 const port = process.env.PORT || 5000; 

@@ -1,4 +1,4 @@
-import { Schema, model, PreSaveMiddlewareFunction } from "mongoose"; 
+import { Schema, model } from "mongoose"; 
 import slugify from "slugify";
 import { createUniqueSlug } from "../helpers/slug.helper";
 import Inventory from './inventory.model';
