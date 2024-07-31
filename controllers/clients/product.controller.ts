@@ -163,12 +163,12 @@ export const category = async (req: Request, res: Response) :Promise<void> =>{
     }
 } 
  
-//[POST] "/products/:id/feedback/add/" 
+//[POST] "/products/:productId/feedback/add/" 
 export const addFeedback = async (req: Request, res: Response) :Promise<void> =>{
     const product_id = req.params.productId;
     const user_id = res.locals.user.id; 
     const order_id = res.locals.user.order_id;  
-    const {rating, comment, images} = req.body; 
+    const {rating, comment, images} = req.body;  
 
     
     try { 
