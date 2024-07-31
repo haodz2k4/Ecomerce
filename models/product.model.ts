@@ -32,12 +32,14 @@ const productSchema = new Schema<Product>({
     avatar: String,
     price: {
         type: Number,
-        min: [0,'Giá tiền không được là số âm']
+        min: [0,'Giá tiền không được là số âm'],
+        required: true
     },
     discountPercentage: {
         type: Number,
         min: [0,'Phần trăm giảm giá không được là số âm'],
-        max: [100,'Phần trăm giảm giá tối đa là 100']
+        max: [100,'Phần trăm giảm giá tối đa là 100'],
+        required: true
     },
     deleted: {
         type: Boolean,
