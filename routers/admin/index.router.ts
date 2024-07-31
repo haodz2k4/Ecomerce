@@ -10,6 +10,7 @@ import authRouter from './auth.router';
 import myAccountRouter from './my-account.router';
 import settingRouter from "./setting.router";
 import userRouter from "./user.router";
+import poinRouter from "./point.router";
 import orderRouter from "./order.router";
 //end router
 //middleware 
@@ -28,5 +29,6 @@ export default (app: Express): void =>{
     app.use(`${path}/my-account`,requireAuth,myAccountRouter);
     app.use(`${path}/settings`,requireAuth,settingRouter)
     app.use(`${path}/users`,requireAuth,userRouter);
+    app.use(`${path}/points`,requireAuth,poinRouter);
 
 }

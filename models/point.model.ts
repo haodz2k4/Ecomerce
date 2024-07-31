@@ -5,7 +5,8 @@ interface Point {
     point_earned: number,
     reason: string,
     source: Schema.Types.ObjectId,
-    sourceType: string
+    sourceType: string,
+    deleted: boolean
 }
 //100.000k = 10 points 
 const pointSchema = new Schema<Point>({
@@ -26,12 +27,17 @@ const pointSchema = new Schema<Point>({
     },
     source: {
         type: Schema.Types.ObjectId,
-        required: true
+        required: true,
+        refPath: 'sourceType'
     },
     sourceType: {
         type: String,
-        enum: ['order', 'feedback','account', 'other'], 
-        required: true
+        enum: ['order', 'Feedback','account'], 
+        required: true,
+    },
+    deleted: {
+        type: Boolean,
+        default: false
     }
     
 },{

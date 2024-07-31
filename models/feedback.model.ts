@@ -42,7 +42,7 @@ feedbackSchema.post('save',async function(doc) {
         point_earned: point_earned,
         reason: 'feedback',
         source: doc._id,
-        sourceType: 'feedback'
+        sourceType: 'Feedback'
     }) 
 
     await point.save();

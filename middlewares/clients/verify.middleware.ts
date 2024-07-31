@@ -6,7 +6,7 @@ export const verifyPurchase = async (req: Request, res: Response, next: NextFunc
     const user_id = res.locals.user.id;  
     try {
         const orders = await Order.find({user_id}).select("id"); 
-        if(!orders){
+        if(orders.length === 0){
             res.status(404).json({message: "Người này chưa mua bất kì sản phẩm nào hết"});
             return;
         } 
