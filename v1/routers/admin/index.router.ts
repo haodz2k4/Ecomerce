@@ -16,19 +16,20 @@ import orderRouter from "./order.router";
 //middleware 
 import { requireAuth } from "../../middlewares/admin/auth.middleware";
 const {prefixAdmin} = system;
+const v1 = "/api/v1";
 export default (app: Express): void =>{
 
     const path = `/${prefixAdmin}`;
-    app.use(`${path}/categories`,requireAuth,categoryRouter);
-    app.use(`${path}/products`,requireAuth,productRouter);
-    app.use(`${path}/orders`,requireAuth,orderRouter)
-    app.use(`${path}/inventories`,requireAuth,inventoryRouter);
-    app.use(`${path}/accounts`,requireAuth,accountRouter);
-    app.use(`${path}/roles`,requireAuth,roleRouter);
-    app.use(`${path}/auth`,authRouter);
-    app.use(`${path}/my-account`,requireAuth,myAccountRouter);
-    app.use(`${path}/settings`,requireAuth,settingRouter)
-    app.use(`${path}/users`,requireAuth,userRouter);
-    app.use(`${path}/points`,requireAuth,poinRouter);
+    app.use(v1+`${path}/categories`,requireAuth,categoryRouter);
+    app.use(v1+`${path}/products`,requireAuth,productRouter);
+    app.use(v1+`${path}/orders`,requireAuth,orderRouter)
+    app.use(v1+`${path}/inventories`,requireAuth,inventoryRouter);
+    app.use(v1+`${path}/accounts`,requireAuth,accountRouter);
+    app.use(v1+`${path}/roles`,requireAuth,roleRouter);
+    app.use(v1+`${path}/auth`,authRouter);
+    app.use(v1+`${path}/my-account`,requireAuth,myAccountRouter);
+    app.use(v1+`${path}/settings`,requireAuth,settingRouter)
+    app.use(v1+`${path}/users`,requireAuth,userRouter);
+    app.use(v1+`${path}/points`,requireAuth,poinRouter);
 
 }
