@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Error } from "mongoose";
-import Product from "../../../models/product.model"; 
-import Category from "../../../models/category.model";
+import Product from "../../models/product.model"; 
+import Category from "../../models/category.model";
 import { buildFindQuery, buildSorting } from "../../../helpers/search.helper"; 
 import { getPagination } from '../../../helpers/pagination.helper';
 // [GET] "/"

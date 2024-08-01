@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { Error } from "mongoose";
 import XLSX from "xlsx";
 //model
-import Order from "../../../models/order.model";
-import OrderItem from "../../../models/order-detail.model";
+import Order from "../../models/order.model";
+import OrderItem from "../../models/order-detail.model";
 //helpers
 import { buildFindQuery, buildSorting } from '../../../helpers/search.helper';
 import { getPagination } from '../../../helpers/pagination.helper';

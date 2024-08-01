@@ -7,11 +7,11 @@ import { hash } from "bcrypt";
 const templatePath = path.join(__dirname, '..', '..', 'templates', 'otpEmail.html'); 
 import jwt from "jsonwebtoken";
 //models
-import ForgotPassword from "../../../models/forgot-password.model";
-import User from "../../../models/user.model";
-import Favorite from "../../../models/favorite.model";
-import Address from "../../../models/address.model";
-import Order from "../../../models/order.model";
+import ForgotPassword from "../../models/forgot-password.model";
+import User from "../../models/user.model";
+import Favorite from "../../models/favorite.model";
+import Address from "../../models/address.model";
+import Order from "../../models/order.model";
 //helper
 import { sendMessage } from '../../../helpers/sendMail.helper';
 import { generateRandomNumber } from "../../../helpers/generate.helper";

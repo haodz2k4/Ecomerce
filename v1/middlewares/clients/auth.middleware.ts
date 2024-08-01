@@ -1,6 +1,6 @@
     import { Request, Response, NextFunction } from "express";
-    import User from "../../../models/user.model";
-    import Cart from "../../../models/cart.model";
+    import User from "../../models/user.model";
+    import Cart from "../../models/cart.model";
     import jwt from "jsonwebtoken";
     export const requireAuth = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
         if(!req.headers.authorization){

@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import {isEmail, isMobilePhone, isURL} from "validator";
 import { isValidBirthDate } from '../../../utils/date.utils'; 
 
-import User from '../../../models/user.model';
-import Product from '../../../models/product.model';
+import User from '../../models/user.model';
+import Product from '../../models/product.model';
 import { compare } from "bcrypt";
 interface infoLogin {
     email?: string,

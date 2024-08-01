@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import Product from '../../../models/product.model';
+import Product from '../../models/product.model';
 import {Error} from 'mongoose';
 //helpers
 import { getPagination } from "../../../helpers/pagination.helper";

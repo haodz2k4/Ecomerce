@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Point from "../../../models/point.model";
+import Point from "../../models/point.model";
 import { buildFindQuery, buildSorting } from '../../../helpers/search.helper';
 import { getPagination } from '../../../helpers/pagination.helper';
 import { Error } from "mongoose";

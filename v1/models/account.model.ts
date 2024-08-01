@@ -1,6 +1,6 @@
 import { Schema, model, Types } from "mongoose";
 import {hash} from "bcrypt";
-import { generateString } from "../helpers/generate.helper";
+import { generateString } from "../../helpers/generate.helper";
 interface Account {
     fullName: string,
     avatar: string,

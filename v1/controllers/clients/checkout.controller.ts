@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import Order from "../../../models/order.model";
-import OrderDetail from "../../../models/order-detail.model";
+import Order from "../../models/order.model";
+import OrderDetail from "../../models/order-detail.model";
 import { Error } from "mongoose";
 //[POST] "/checkout/order"
 export const index = async (req: Request, res: Response) :Promise<void> =>{

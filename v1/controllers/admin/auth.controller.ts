@@ -2,7 +2,7 @@
 import { Request, Response } from "express"; 
 import { isEmail, isMobilePhone } from "validator";
 import { Error } from "mongoose";
-import Account from "../../../models/account.model";
+import Account from "../../models/account.model";
 import bcrypt from "bcrypt"; 
 import jwt from  "jsonwebtoken";
 //[POST] "/admin/auth/login"

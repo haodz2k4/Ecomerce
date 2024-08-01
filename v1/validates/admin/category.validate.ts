@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import Category from "../../../models/category.model";
+import Category from "../../models/category.model";
 //validator
 import { isValidObjectId } from "mongoose";
 import { isURL } from "validator";

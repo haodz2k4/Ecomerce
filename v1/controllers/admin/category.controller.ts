@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import Category from '../../../models/category.model';
+import Category from '../../models/category.model';
 import {Error} from 'mongoose';
 //helpers
 import { getPagination } from "../../../helpers/pagination.helper";

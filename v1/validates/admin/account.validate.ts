@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Types } from "mongoose";
-import Role from "../../../models/role.model";
-import Account from "../../../models/account.model";
+import Role from "../../models/role.model";
+import Account from "../../models/account.model";
 import {isEmail, isURL,isMobilePhone} from "validator";
 export const add = async (req: Request, res: Response, next: NextFunction) :Promise<void>  =>{ 
 

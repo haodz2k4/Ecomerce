@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Error } from "mongoose";
-import Role from "../../../models/role.model"; 
+import Role from "../../models/role.model"; 
 import { buildFindQuery, buildSorting } from "../../../helpers/search.helper";
 import { getPagination } from "../../../helpers/pagination.helper";
 //[GET] "/admin/roles"

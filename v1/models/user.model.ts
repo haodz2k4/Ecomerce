@@ -1,7 +1,7 @@
 import {Schema, model} from "mongoose";
 import slugify from "slugify";
 import { hash } from "bcrypt";
-import { createUniqueSlug } from "../helpers/slug.helper";
+import { createUniqueSlug } from "../../helpers/slug.helper";
 import Cart from "../models/cart.model";
 interface User {
     fullName: string,

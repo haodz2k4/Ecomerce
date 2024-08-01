@@ -2,11 +2,11 @@ import { getPagination } from '../../../helpers/pagination.helper';
 import { buildFindQuery, buildSorting } from '../../../helpers/search.helper';
 import { Request, Response } from "express";
 //model
-import Product from "../../../models/product.model";
-import Category from "../../../models/category.model"; 
-import Inventory from "../../../models/inventory.model";
-import Favorite from "../../../models/favorite.model"; 
-import FeedBack from "../../../models/feedback.model";
+import Product from "../../models/product.model";
+import Category from "../../models/category.model"; 
+import Inventory from "../../models/inventory.model";
+import Favorite from "../../models/favorite.model"; 
+import FeedBack from "../../models/feedback.model";
 import { Error } from "mongoose";
 //[GET] "/products"
 export const index = async (req: Request, res: Response) :Promise<void> =>{

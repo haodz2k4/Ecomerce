@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { Error, Types } from "mongoose";
 //models
-import Cart from "../../../models/cart.model"; 
-import CartItem from "../../../models/cart-item.model";
+import Cart from "../../models/cart.model"; 
+import CartItem from "../../models/cart-item.model";
 import validator from "validator";
 //[GET] "/cart"
 export const index = async (req: Request, res: Response) :Promise<void> =>{

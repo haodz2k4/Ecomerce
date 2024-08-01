@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Error } from "mongoose";
-import Account from "../../../models/account.model"; 
+import Account from "../../models/account.model"; 
 import jwt from "jsonwebtoken";
 export const requireAuth = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
 

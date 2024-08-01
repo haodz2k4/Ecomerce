@@ -1,5 +1,5 @@
 import { Request, Response } from "express"; 
-import Account from "../../../models/account.model";
+import Account from "../../models/account.model";
 import { Error } from "mongoose";
 import { compare } from "bcrypt";
 import { hash } from "bcrypt";

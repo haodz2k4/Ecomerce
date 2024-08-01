@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import SettingGeneral from "../../../models/setting-general.model";
+import SettingGeneral from "../../models/setting-general.model";
 //[GET] "/admin/settings/general"
 export const general = async (req: Request, res: Response):Promise<void> =>{
 

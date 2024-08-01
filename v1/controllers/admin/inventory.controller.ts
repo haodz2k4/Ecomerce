@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import {Error} from "mongoose";
-import Inventory from "../../../models/inventory.model";
+import Inventory from "../../models/inventory.model";
 //helper 
 import { buildFindQuery, buildSorting } from '../../../helpers/search.helper';
 //[GET] "/admin/inventories"

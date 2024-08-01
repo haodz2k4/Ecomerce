@@ -1,8 +1,8 @@
 import { Request, Response } from "express"; 
-import Account from "../../../models/account.model"; 
+import Account from "../../models/account.model"; 
 import { Error, isObjectIdOrHexString } from "mongoose";
 import { Types } from "mongoose";
-import Role from "../../../models/role.model";
+import Role from "../../models/role.model";
 //helpers
 import { buildFindQuery } from '../../../helpers/search.helper';
 import { getPagination } from "../../../helpers/pagination.helper";

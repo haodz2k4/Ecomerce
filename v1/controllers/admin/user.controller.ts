@@ -2,8 +2,8 @@ import { Request, Response } from "express";
 import { Error } from "mongoose";
 import { hash } from "bcrypt";
 //model
-import User from "../../../models/user.model";
-import Address from "../../../models/address.model"
+import User from "../../models/user.model";
+import Address from "../../models/address.model"
 //helper
 import { buildFindQuery,buildSorting } from '../../../helpers/search.helper';
 import { getPagination } from '../../../helpers/pagination.helper';

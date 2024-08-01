@@ -1,8 +1,8 @@
 import { Request, Response } from "express"
 import { buildFindQuery, buildSorting, buildSuggestions } from "../../../helpers/search.helper";
 import { Error } from "mongoose";
-import Product from "../../../models/product.model";
-import Category from "../../../models/category.model";
+import Product from "../../models/product.model";
+import Category from "../../models/category.model";
 import { getPagination } from "../../../helpers/pagination.helper";
 //[GET] "/search"
 export const search = async (req: Request, res: Response) :Promise<void> =>{

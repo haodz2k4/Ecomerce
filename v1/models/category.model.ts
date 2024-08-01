@@ -1,4 +1,4 @@
-import { createUniqueSlug } from './../helpers/slug.helper';
+import { createUniqueSlug } from '../../helpers/slug.helper';
 import { Schema, model } from 'mongoose';
 import slugify from 'slugify';
 interface Category {
