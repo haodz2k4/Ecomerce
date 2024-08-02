@@ -27,11 +27,16 @@ getConnection(urlDatabase)
 //body parser 
 import bodyParser from "body-parser";
 app.use(bodyParser.json())
-//admin router
+//v1
 import adminRouter from './v1/routers/admin/index.router';
 adminRouter(app); 
 import clientRouter from './v1/routers/clients/index.router';
 clientRouter(app);
+//end v1 
+//v2  
+
+
+//end v2
 //port 
 const port = process.env.PORT || 5000; 
 app.listen(port, () =>{
