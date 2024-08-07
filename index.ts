@@ -37,6 +37,10 @@ clientRouter(app);
 import v2AdminRouter from './v2/router/admin/index.router'
 v2AdminRouter(app)
 
+
+//handle error 
+import { errorHandler } from "./v2/middlewares/errorHandle.middleware";
+app.use(errorHandler)
 //end v2
 //port 
 const port = process.env.PORT || 5000; 

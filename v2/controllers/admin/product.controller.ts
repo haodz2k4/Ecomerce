@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {Error} from "mongoose"
 import ApiError from "../../../utils/ApiError.util";
 //service 
 import * as ProductService from "../../services/product.services";
 import { getPagination } from './../../../helpers/pagination.helper';
 //[GET] "/admin/products"
-export const index = async (req: Request, res: Response): Promise<void> => {
+export const index = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try { 
         interface Find {
             deleted: boolean,
@@ -31,17 +31,11 @@ export const index = async (req: Request, res: Response): Promise<void> => {
 
         res.status(200).json({ products, pagination });
     } catch (error) {
-        if (error instanceof ApiError) {
-            res.status(error.statusCode).json({ message: error.message });
-        } else if (error instanceof Error) {
-            res.status(400).json({message: error.message})
-        }else{
-            res.status(500).json({message: "Lỗi không xác định"})
-        }
+        next(error)
     }
 };
 //[PATCH] "/admin/products/change/status/:id"
-export const changeStatus = async (req: Request, res: Response) :Promise<void> => {
+export const changeStatus = async (req: Request, res: Response, next: NextFunction) :Promise<void> => {
     const id = req.params.id 
     const status = req.body.status
     try {
@@ -49,17 +43,11 @@ export const changeStatus = async (req: Request, res: Response) :Promise<void> =
 
         res.status(200).json({message: "Cập nhật sản phẩm thành công", product})
     } catch (error) {
-        if (error instanceof ApiError) {
-            res.status(error.statusCode).json({ message: error.message });
-        } else if (error instanceof Error) {
-            res.status(400).json({message: error.message})
-        }else{
-            res.status(500).json({message: "Lỗi không xác định"})
-        }
+        next(error)
     }
 } 
 //[PATCH] "/admin/products/change/multi/:type"
-export const changeMulti = async (req: Request, res: Response) :Promise<void> =>{
+export const changeMulti = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
     const type = req.params.type 
     const ids = req.body.ids
     try {
@@ -74,12 +62,6 @@ export const changeMulti = async (req: Request, res: Response) :Promise<void> =>
             res.json(400).json({message: "Thể loại không hợp lệ"})
         }
     } catch (error) {
-        if (error instanceof ApiError) {
-            res.status(error.statusCode).json({ message: error.message });
-        } else if (error instanceof Error) {
-            res.status(400).json({message: error.message})
-        }else{
-            res.status(500).json({message: "Lỗi không xác định"})
-        }
+        next(error)
     }
 }
