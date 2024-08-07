@@ -21,18 +21,40 @@ export const index = async (req: Request, res: Response): Promise<void> => {
             const regExp = new RegExp(keywordQuery)
             find.title = regExp
         } 
-        const counts = await ProductService.GetCounts(find)
+        const status = req.query.status 
+        if(typeof status === 'string'){
+            find.status = status
+        }
+        const counts = await ProductService.getCounts(find)
         const pagination = getPagination(req,counts,15)
-        const products = await ProductService.GetProucts(find,pagination.limit, pagination.skip);
+        const products = await ProductService.getProucts(find,pagination.limit, pagination.skip);
 
         res.status(200).json({ products, pagination });
     } catch (error) {
         if (error instanceof ApiError) {
             res.status(error.statusCode).json({ message: error.message });
         } else if (error instanceof Error) {
-            res.status(400).json({message: "Lỗi Khi Truy vấn csdl"})
+            res.status(400).json({message: error.message})
         }else{
             res.status(500).json({message: "Lỗi không xác định"})
         }
     }
 };
+//[PATCH] "/admin/products/change/status/:id"
+export const changeStatus = async (req: Request, res: Response) :Promise<void> => {
+    const id = req.params.id 
+    const status = req.body.status
+    try {
+        const product = await ProductService.changeStatus(id, status)
+
+        res.status(200).json({message: "Cập nhật sản phẩm thành công", product})
+    } catch (error) {
+        if (error instanceof ApiError) {
+            res.status(error.statusCode).json({ message: error.message });
+        } else if (error instanceof Error) {
+            res.status(400).json({message: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+} 
