@@ -30,4 +30,17 @@ export const changeStatus = async (id: string, status: string) :Promise<any> =>{
         throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
     }
     return product
+} 
+export const changeMultiDelte = async (ids :string[]) :Promise<any> => {
+    if(ids.length < 0){
+        throw new ApiError(400,"Vui lòng gửi ids")
+    }
+    const infoUpdate = await Product.updateMany({_id: {$in: ids}},{deleted: true}) 
+    if(infoUpdate.modifiedCount === 0){
+        throw new ApiError(400,"Không có sản phẩm nào bị xóa")
+    }
+    if(infoUpdate.modifiedCount !== ids.length) {
+        throw new ApiError(400,"Không thể xóa hết sản phẩm")
+    }
+    return infoUpdate
 }

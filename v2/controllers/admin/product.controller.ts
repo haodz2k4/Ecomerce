@@ -58,3 +58,28 @@ export const changeStatus = async (req: Request, res: Response) :Promise<void> =
         }
     }
 } 
+//[PATCH] "/admin/products/change/multi/:type"
+export const changeMulti = async (req: Request, res: Response) :Promise<void> =>{
+    const type = req.params.type 
+    const ids = req.body.ids
+    try {
+        switch(type){
+            case 'delete': 
+                const infoUpdate = await ProductService.changeMultiDelte(ids);
+                res.status(200).json({message: "Xóa nhiều sản phẩm thành công", infoUpdate}) 
+                break; 
+                
+
+            default: 
+            res.json(400).json({message: "Thể loại không hợp lệ"})
+        }
+    } catch (error) {
+        if (error instanceof ApiError) {
+            res.status(error.statusCode).json({ message: error.message });
+        } else if (error instanceof Error) {
+            res.status(400).json({message: error.message})
+        }else{
+            res.status(500).json({message: "Lỗi không xác định"})
+        }
+    }
+}
