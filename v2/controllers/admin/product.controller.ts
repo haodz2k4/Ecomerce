@@ -53,10 +53,14 @@ export const changeMulti = async (req: Request, res: Response, next: NextFunctio
     try {
         switch(type){
             case 'delete': 
-                const infoUpdate = await ProductService.changeMultiDelte(ids);
-                res.status(200).json({message: "Xóa nhiều sản phẩm thành công", infoUpdate}) 
+                const infoUpdateDelete = await ProductService.changeMultiDelte(ids);
+                res.status(200).json({message: "Xóa nhiều sản phẩm thành công", infoUpdateDelete}) 
                 break; 
-                
+            case 'status': 
+                const status = req.body.status 
+                const infoUpdateStatus = await ProductService.changeMultiStatus(ids, status)
+                res.status(200).json({message: "Thay đổi trạng thái nhiều sản phẩm thành công",infoUpdateStatus})
+
 
             default: 
             res.json(400).json({message: "Thể loại không hợp lệ"})

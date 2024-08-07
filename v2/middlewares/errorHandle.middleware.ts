@@ -1,4 +1,5 @@
 import { NextFunction,Response, Request} from 'express';
+import { Error } from 'mongoose';
 import ApiError from '../../utils/ApiError.util';
 export const errorHandler = (error: any,req: Request,res: Response, next: NextFunction) => {
 
