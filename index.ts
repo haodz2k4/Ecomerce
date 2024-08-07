@@ -34,7 +34,8 @@ import clientRouter from './v1/routers/clients/index.router';
 clientRouter(app);
 //end v1 
 //v2  
-
+import v2AdminRouter from './v2/router/admin/index.router'
+v2AdminRouter(app)
 
 //end v2
 //port 
