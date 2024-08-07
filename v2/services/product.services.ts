@@ -60,4 +60,23 @@ export const changeMultiStatus = async (ids: string[], status: string) :Promise<
         throw new ApiError(400,"Không thể cập nhật hết sản phẩm")
     }
     return infoUpdate
+} 
+
+export const changeMultiPosition = async (ids: {id: string, position: string}[]) :Promise<any> =>{ 
+    const products:any = [] 
+    const promises = ids.map(item  => 
+        Product.findByIdAndUpdate(item.id,{position: item.position},{runValidators: true, new: true})
+        .then(update => {
+            if(update) products.push(update)
+        } )
+        .catch(error => {
+            throw new ApiError(500, `Lỗi khi cập nhật sản phẩm ${item.id}: ${error.message}`)
+        })
+    )
+
+    await Promise.all(promises)
+    if(products.length !== ids.length){ 
+        throw new ApiError(400,"Không thể cập nhật vị trí hết sản phẩm")
+    }
+    return products
 }

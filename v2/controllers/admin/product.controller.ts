@@ -60,8 +60,12 @@ export const changeMulti = async (req: Request, res: Response, next: NextFunctio
                 const status = req.body.status 
                 const infoUpdateStatus = await ProductService.changeMultiStatus(ids, status)
                 res.status(200).json({message: "Thay đổi trạng thái nhiều sản phẩm thành công",infoUpdateStatus})
-
-
+                break;
+            case 'position': 
+                
+                const products = await ProductService.changeMultiPosition(ids);
+                res.status(200).json({message: "Thay đổi vị trí nhiều sản hẩm thành công", products})
+                break;
             default: 
             res.json(400).json({message: "Thể loại không hợp lệ"})
         }
