@@ -9,5 +9,7 @@ router.patch("/change/status/:id",controller.changeStatus)
 router.patch("/change/multi/:type",controller.changeMulti)
 router.patch("/edit/:id",validates.edit,controller.edit)
 router.patch("/delete/:id",controller.deleteUser)
-router.post("/add",validates.add,controller.add)
+router.post("/add",validates.add,controller.add) 
+router.patch("/change/position/:id",controller.changePosition)
+router.patch("/change/category/:id",validates.changeCategory,controller.changeCategory)
 export default router

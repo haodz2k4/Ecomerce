@@ -113,3 +113,26 @@ export const add = async (req: Request, res: Response, next: NextFunction) :Prom
         next(error)
     }
 } 
+//[PATCH] "/admin/products/change/position/:id"
+export const changePosition = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
+    const id = req.params.id 
+    const position = req.body.position 
+
+    try {
+        const product = await ProductService.changePosition(id, position)
+        res.status(200).json({message: "Cập nhật vị trí thành công",product})
+    } catch (error) {
+        next(error)
+    }
+}   
+//[PATCH] "/admin/products/change/category/:id"
+export const changeCategory = async (req: Request, res: Response, next: NextFunction) :Promise<void> => {
+    const id = req.params.id 
+    const category_id = req.body.category_id
+    try {
+       const product = await ProductService.changeCategory(id,category_id)
+        res.status(200).json({message: "Cập nhật danh mục thành công", product})
+    } catch (error) {
+        next(error)
+    }
+}

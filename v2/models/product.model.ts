@@ -22,7 +22,7 @@ const productSchema = new Schema<Product>({
         min: 3,
         max: 10 
     },
-    category_id: {type: Schema.Types.ObjectId, ref: 'categoryv2'},
+    category_id: {type: Schema.Types.ObjectId, ref: 'CategoryV2'},
     description: String,
     thumbnail: String,
     price: {

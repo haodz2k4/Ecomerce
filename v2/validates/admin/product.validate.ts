@@ -49,3 +49,15 @@ export const add = async (req: Request, res: Response, next: NextFunction) => {
         next(error)
     }
 }
+export const changeCategory = async (req: Request, res: Response, next: NextFunction) =>{
+
+    
+    const categoryId = req.body.category_id 
+    if(typeof categoryId === "string"){
+        const exists = await CategoryV2.exists({_id: categoryId})
+        if(!exists){
+            throw new ApiError(400,"Danh mục không tồn tại")
+        }
+    } 
+    next()
+}

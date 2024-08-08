@@ -35,6 +35,27 @@ export const changeStatus = async (id: string, status: string) :Promise<any> =>{
     }
     return product
 } 
+//CHANGE POSITION 
+export const changePosition = async (id: string, position: number) =>{
+    const product = await Product
+    .findByIdAndUpdate(id,{position},{runValidators: true, new: true})
+    .select("position")
+    if(!product){
+        throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
+    }
+    return product 
+}
+//CHANGE CATEGORY 
+export const changeCategory = async (id: string, category: string) =>{
+    const product = await Product
+    .findByIdAndUpdate(id,{category_id: category},{new: true, runValidators: true})
+    .select("category_id")
+    .populate('category_id','title') 
+    if(!product){
+        throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
+    }
+    return product
+}
 //CHANGE MULTI DELETE
 export const changeMultiDelte = async (ids :string[]) :Promise<any> => {
     if(ids.length < 0){
@@ -105,6 +126,5 @@ export const deleteProduct = async (id: string) => {
 export const create = async (body: any) => { 
     const product = new Product(body);
     await product.save()
-
     return product
-}
+}   
