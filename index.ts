@@ -19,7 +19,9 @@ app.use(session({
 //cors 
 app.use(cors())
 //end cors 
-
+//connect redis 
+import redis from "./config/redis";
+redis
 //connect database 
 const urlDatabase = process.env.URL_DATABASE;
 getConnection(urlDatabase) 
