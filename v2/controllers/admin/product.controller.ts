@@ -136,3 +136,13 @@ export const changeCategory = async (req: Request, res: Response, next: NextFunc
         next(error)
     }
 }
+//[DETAIL] "/admin/products/detail/:id"
+export const detail = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
+    try {
+        const id = req.params.id
+        const product = await ProductService.getProduct({_id: id, deleted: false})
+        res.status(200).json({product})
+    } catch (error) {
+        next(error)
+    }
+}

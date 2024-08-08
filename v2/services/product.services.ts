@@ -15,6 +15,14 @@ export const getProucts = async (find: any, pagination: any,sort: any) :Promise<
 
     return products
 } 
+//GET PRODUCT 
+export const getProduct = async (find: {_id: string, deleted?: boolean, status?: string}) => {
+    const product = await Product.findOne(find)
+    if(!product){
+        throw new ApiError(404,"Không tìm thấy sản phẩm")
+    }
+    return product
+}
 //GET COUNTS PRODUCTS
 export const getCounts = async (find: any = {}) :Promise<number> => {
     

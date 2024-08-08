@@ -12,4 +12,5 @@ router.patch("/delete/:id",controller.deleteUser)
 router.post("/add",validates.add,controller.add) 
 router.patch("/change/position/:id",controller.changePosition)
 router.patch("/change/category/:id",validates.changeCategory,controller.changeCategory)
+router.get("/detail/:id",controller.detail)
 export default router
