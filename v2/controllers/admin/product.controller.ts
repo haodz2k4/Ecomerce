@@ -73,3 +73,16 @@ export const changeMulti = async (req: Request, res: Response, next: NextFunctio
         next(error)
     }
 }
+//[GET] "/admin/products/edit/:id"
+export const edit = async (req: Request, res: Response, next: NextFunction) :Promise<void> => {
+    try {
+        const id = req.params.id 
+        const body = req.body
+        const product = await ProductService.editProduct(id,body);
+        res.status(200).json({message: "Cập nhật thành công", product})
+        
+    } catch (error) {
+        next(error)
+    }
+    
+}

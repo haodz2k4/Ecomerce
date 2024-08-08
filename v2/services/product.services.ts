@@ -48,6 +48,7 @@ export const changeMultiDelte = async (ids :string[]) :Promise<any> => {
     }
     return infoUpdate
 } 
+//CHANGE MULTI STATUS
 export const changeMultiStatus = async (ids: string[], status: string) :Promise<any> =>{
     if(ids.length < 0){
         throw new ApiError(400,"Vui lòng gửi ids")
@@ -61,7 +62,7 @@ export const changeMultiStatus = async (ids: string[], status: string) :Promise<
     }
     return infoUpdate
 } 
-
+// CHANGE MULTI POSITION 
 export const changeMultiPosition = async (ids: {id: string, position: string}[]) :Promise<any> =>{ 
     const products:any = [] 
     const promises = ids.map(item  => 
@@ -79,4 +80,13 @@ export const changeMultiPosition = async (ids: {id: string, position: string}[])
         throw new ApiError(400,"Không thể cập nhật vị trí hết sản phẩm")
     }
     return products
+}
+
+export const editProduct = async (id: string, body: any) =>{
+
+    const product = await Product.findByIdAndUpdate(id,body,{new: true, runValidators: true});
+    if(!product){
+        throw new ApiError(400,"Không tìm thấy sản phẩm tương ứng")
+    }
+    return product
 }
