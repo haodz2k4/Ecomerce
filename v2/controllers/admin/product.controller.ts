@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 //service 
 import * as ProductService from "../../services/product.services";
 import { getPagination } from './../../../helpers/pagination.helper';
+import { buildSorting } from './../../../helpers/search.helper';
 //[GET] "/admin/products"
 export const index = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try { 
@@ -23,9 +24,11 @@ export const index = async (req: Request, res: Response, next: NextFunction): Pr
         if(typeof status === 'string'){
             find.status = status
         }
+        //sort
+        const sort = buildSorting(req,{position: 'desc'})
         const counts = await ProductService.getCounts(find)
         const pagination = getPagination(req,counts,15)
-        const products = await ProductService.getProucts(find,pagination.limit, pagination.skip);
+        const products = await ProductService.getProucts(find,pagination, sort);
 
         res.status(200).json({ products, pagination });
     } catch (error) {

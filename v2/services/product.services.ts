@@ -2,12 +2,13 @@ import ApiError from "../../utils/ApiError.util";
 import Product from "../models/product.model";
 
 //GET LIST PRODUCTS
-export const getProucts = async (find: any, limit: number, skip: number) :Promise<any> => {
+export const getProucts = async (find: any, pagination: any,sort: any) :Promise<any> => {
     const products = await Product
     .find(find)
-    .limit(limit)
-    .skip(skip)
+    .limit(pagination.limit)
+    .skip(pagination.skip)
     .select("-deleted")
+    .sort(sort)
     if (products.length === 0){
         throw new ApiError(404,"Không tìm thấy sản phẩm nào hết")
     }
