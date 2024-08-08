@@ -1,6 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import {Error} from "mongoose"
-import ApiError from "../../../utils/ApiError.util";
 //service 
 import * as ProductService from "../../services/product.services";
 import { getPagination } from './../../../helpers/pagination.helper';
@@ -85,4 +83,30 @@ export const edit = async (req: Request, res: Response, next: NextFunction) :Pro
         next(error)
     }
     
-}
+} 
+//[PATCH] "/admin/products/delete/:id"
+export const deleteUser = async (req: Request, res: Response, next: NextFunction):Promise<void> =>{
+    const id = req.params.id 
+    try {
+        const product = await ProductService.deleteProduct(id)
+        res.status(200).json({message: "Xóa sản phẩm thành công", product})
+    } catch (error) {
+        next(error)
+    }
+} 
+//[POST] "/admin/products/add"
+export const add = async (req: Request, res: Response, next: NextFunction) :Promise<void> => {
+    const body = req.body;
+
+    try { 
+        if(body.position){
+            body.position = parseInt(body.position)
+        }else{
+            body.position = await ProductService.getCounts() + 1
+        }
+        const product = await ProductService.create(body);
+        res.status(200).json({message: "Thêm thành công", product})
+    } catch (error) {
+        next(error)
+    }
+} 

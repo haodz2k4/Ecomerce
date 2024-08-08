@@ -1,4 +1,6 @@
 import { Schema, model } from 'mongoose'; 
+import slugify from 'slugify';
+import { createUniqueSlug } from '../../helpers/slug.helper';
 interface Product {
     title: string,
     category_id: Schema.Types.ObjectId,
@@ -40,6 +42,7 @@ const productSchema = new Schema<Product>({
     },
     highlighted: {
         type: String,
+        enum: ["0","1"],
         default: "0" 
     },
     position: {
@@ -59,5 +62,13 @@ const productSchema = new Schema<Product>({
     timestamps: true
 }) 
 
+productSchema.pre('save',async function(next) {
+    if(this.isModified('title')){
+        const newSlug = slugify(this.title,{lower: true, strict: true})
+        this.slug = await createUniqueSlug(model('ProductV2'),newSlug)
+    }
+
+    next()
+})
 
 export default model("ProductV2",productSchema)

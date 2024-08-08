@@ -3,9 +3,11 @@ const router = Router()
 import * as controller from "../../controllers/admin/product.controller" 
 
 //validate 
-import * as validator from "../../validates/admin/product.validate";
+import * as validates from "../../validates/admin/product.validate";
 router.get("/", controller.index)
 router.patch("/change/status/:id",controller.changeStatus)
 router.patch("/change/multi/:type",controller.changeMulti)
-router.patch("/edit/:id",validator.edit,controller.edit)
+router.patch("/edit/:id",validates.edit,controller.edit)
+router.patch("/delete/:id",controller.deleteUser)
+router.post("/add",validates.add,controller.add)
 export default router

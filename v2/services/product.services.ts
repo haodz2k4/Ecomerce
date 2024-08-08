@@ -15,7 +15,7 @@ export const getProucts = async (find: any, limit: number, skip: number) :Promis
     return products
 } 
 //GET COUNTS PRODUCTS
-export const getCounts = async (find: any) :Promise<number> => {
+export const getCounts = async (find: any = {}) :Promise<number> => {
     
     const counts = await Product.countDocuments(find);
     if(counts === 0){
@@ -66,7 +66,7 @@ export const changeMultiStatus = async (ids: string[], status: string) :Promise<
 export const changeMultiPosition = async (ids: {id: string, position: string}[]) :Promise<any> =>{ 
     const products:any = [] 
     const promises = ids.map(item  => 
-        Product.findByIdAndUpdate(item.id,{position: item.position},{runValidators: true, new: true})
+        Product.findByIdAndUpdate(item.id,{position: item.position},{runValidators: true, new: true}).select("position")
         .then(update => {
             if(update) products.push(update)
         } )
@@ -81,12 +81,29 @@ export const changeMultiPosition = async (ids: {id: string, position: string}[])
     }
     return products
 }
-
+//EDIT PRODUCTS
 export const editProduct = async (id: string, body: any) =>{
 
     const product = await Product.findByIdAndUpdate(id,body,{new: true, runValidators: true});
     if(!product){
         throw new ApiError(400,"Không tìm thấy sản phẩm tương ứng")
     }
+    return product
+}
+//DELETE PRODUCTS 
+export const deleteProduct = async (id: string) => {
+    const product = await Product.findByIdAndUpdate(id, {deleted: true},{new: true}).select("deleted");
+
+    if(!product){
+        throw new ApiError(400,"Không tìm thấy sản phẩm")
+    }
+    return product
+
+} 
+//CREATE PRODUCTS 
+export const create = async (body: any) => { 
+    const product = new Product(body);
+    await product.save()
+
     return product
 }
