@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import CategoryV2 from "../../models/category.model";
+import Category from "../../models/category.model";
 import ApiError from "../../../utils/ApiError.util";
 import {isURL} from "validator";
 export const edit = async (req: Request, res: Response, next: NextFunction) => {
@@ -7,9 +7,9 @@ export const edit = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const categoryId = req.body.category_id 
         if(typeof categoryId === "string"){
-            const exists = await CategoryV2.exists({_id: categoryId})
+            const exists = await Category.exists({_id: categoryId})
             if(!exists){
-                throw new ApiError(400,"Danh mục không tồn tại")
+                throw new ApiError(404,"Danh mục không tồn tại")
             }
         } 
         const thumbnail = req.body.thumbnail;
@@ -31,7 +31,7 @@ export const add = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const categoryId = req.body.category_id 
         if(typeof categoryId === "string"){
-            const exists = await CategoryV2.exists({_id: categoryId})
+            const exists = await Category.exists({_id: categoryId})
             if(!exists){
                 throw new ApiError(400,"Danh mục không tồn tại")
             }
@@ -54,7 +54,7 @@ export const changeCategory = async (req: Request, res: Response, next: NextFunc
     
     const categoryId = req.body.category_id 
     if(typeof categoryId === "string"){
-        const exists = await CategoryV2.exists({_id: categoryId})
+        const exists = await Category.exists({_id: categoryId})
         if(!exists){
             throw new ApiError(400,"Danh mục không tồn tại")
         }

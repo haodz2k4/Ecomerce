@@ -122,7 +122,7 @@ export const changeCategory = async (req: Request, res: Response, next: NextFunc
 export const detail = async (req: Request, res: Response, next: NextFunction) :Promise<void> =>{
     try {
         const id = req.params.id
-        const product = await ProductService.getProduct({_id: id, deleted: false})
+        const product = await ProductService.getProductById(id)
         const stocks = await ProductService.getStockByProductId(id)
         res.status(200).json({product,stocks})
     } catch (error) {

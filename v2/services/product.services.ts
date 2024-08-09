@@ -27,32 +27,39 @@ export const getProducts = async (find: Find, pagination: Pagination, sort: Sort
         throw new ApiError(404, "Không tìm thấy sản phẩm nào hết");
     }
     await redis.set(cacheKey, JSON.stringify(products), 'EX', 3600);
-
+    await redis.sadd("products_cache_set",cacheKey)
     return products;
 }
 //GET PRODUCT 
-export const getProduct = async (find: {_id: string, deleted?: boolean, status?: string}) => {
-    const product = await Product.findOne(find).populate('category_id','title thumbnail')
+export const getProductById = async (id: string) => { 
+    const cacheKey = `product:${id}`
+    const cachedProduct = await redis.get(cacheKey)
+    if(cachedProduct){
+        return JSON.parse(cachedProduct)
+    }
+    const product = await Product.findOne({_id: id, deleted: false}).populate('category_id','title thumbnail')
     if(!product){
         throw new ApiError(404,"Không tìm thấy sản phẩm")
     }
+    await redis.set(cacheKey,JSON.stringify(product),'EX',1800)
     return product
 }
 //GET STOCK BY PRODUCT 
 export const getStockByProductId = async (id: string) => {
+    const cacheKey = `stocks:${id}`
+    const cachedStock = await redis.get(cacheKey)
+    if(cachedStock){
+        return JSON.parse(cachedStock)
+    }
     const stocks = await Stock.find({product_id: id})
     .select("quantity warehouseLocation")
     .populate('supplier_id','name contactInfo')
+    await redis.set(cacheKey,JSON.stringify(stocks),'EX',1800)
     return stocks
 }
 //GET COUNTS PRODUCTS
 export const getCounts = async (find: Find) :Promise<number> => {
-    
-    const counts = await Product.countDocuments(find);
-    if(counts === 0){
-        throw new ApiError(404,"Không tìm thấy sản phẩm nào")
-    }
-    return counts
+    return await Product.countDocuments(find);
 }
 
 //CHANGE STATUS
@@ -64,6 +71,11 @@ export const changeStatus = async (id: string, status: string) :Promise<any> =>{
     if(!product){
         throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
     }
+    await redis.del(`product:${id}`)
+    const cacheKeys = await redis.smembers('products_cache_set');
+    for(const item of cacheKeys){
+        await redis.del(item)
+    }
     return product
 } 
 //CHANGE POSITION 
@@ -73,6 +85,11 @@ export const changePosition = async (id: string, position: number) =>{
     .select("position")
     if(!product){
         throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
+    }
+    await redis.del(`product:${id}`)
+    const cacheKeys = await redis.smembers('products_cache_set');
+    for(const item of cacheKeys){
+        await redis.del(item)
     }
     return product 
 }
@@ -84,6 +101,11 @@ export const changeCategory = async (id: string, category: string) =>{
     .populate('category_id','title') 
     if(!product){
         throw new ApiError(404,"Không tìm thấy sản phẩm tương ứng")
+    }
+    await redis.del(`product:${id}`)
+    const cacheKeys = await redis.smembers('products_cache_set');
+    for(const item of cacheKeys){
+        await redis.del(item)
     }
     return product
 }
@@ -99,6 +121,10 @@ export const changeMultiDelte = async (ids :string[]) :Promise<any> => {
     if(infoUpdate.modifiedCount !== ids.length) {
         throw new ApiError(400,"Không thể xóa hết sản phẩm")
     }
+    const cacheKeys = await redis.smembers('products_cache_set');
+    for(const item of cacheKeys){
+        await redis.del(item)
+    }
     return infoUpdate
 } 
 
@@ -113,6 +139,10 @@ export const changeMultiStatus = async (ids: string[], status: string) :Promise<
         throw new ApiError(404,"Không có sản phẩm nào được cập nhật")
     }else if(infoUpdate.matchedCount !== ids.length){
         throw new ApiError(400,"Không thể cập nhật hết sản phẩm")
+    }
+    const cacheKeys = await redis.smembers('products_cache_set');
+    for(const item of cacheKeys){
+        await redis.del(item)
     }
     return infoUpdate
 } 
@@ -133,6 +163,11 @@ export const changeMultiPosition = async (ids: {id: string, position: string}[])
     if(products.length !== ids.length){ 
         throw new ApiError(400,"Không thể cập nhật vị trí hết sản phẩm")
     }
+    const cacheKeys = await redis.smembers('products_cache_set');
+    for(const item of cacheKeys){
+        await redis.del(item)
+    }
+    
     return products
 }
 //EDIT PRODUCTS
@@ -141,6 +176,11 @@ export const editProduct = async (id: string, body: any) =>{
     const product = await Product.findByIdAndUpdate(id,body,{new: true, runValidators: true});
     if(!product){
         throw new ApiError(400,"Không tìm thấy sản phẩm tương ứng")
+    }
+    await redis.del(`product:${id}`)
+    const cacheKeys = await redis.smembers('products_cache_set')
+    for(const item of cacheKeys){
+        await redis.del(item)
     }
     return product
 }
@@ -151,6 +191,11 @@ export const deleteProduct = async (id: string) => {
     if(!product){
         throw new ApiError(400,"Không tìm thấy sản phẩm")
     }
+    await redis.del(`product:${id}`)
+    const cacheKeys =await redis.smembers('products_cache_set')
+    for(const item of cacheKeys){
+        await redis.del(item)
+    }
     return product
 
 } 
@@ -158,6 +203,10 @@ export const deleteProduct = async (id: string) => {
 export const create = async (body: any) => { 
     const product = new Product(body);
     await product.save()
+    const cacheKeys = await redis.smembers('products_cache_set')
+    for(const item of cacheKeys){
+        await redis.del(item)
+    }
     return product
 }   
 //SUGGESTION 
