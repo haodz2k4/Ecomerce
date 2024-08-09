@@ -145,3 +145,14 @@ export const create = async (body: any) => {
     await product.save()
     return product
 }   
+//SUGGESTION 
+export const getSuggestions = async (keyword: string, find: {deleted: boolean, status?: string}) => { 
+    const cacheKey = `products:${JSON.stringify(keyword)}:${JSON.stringify(find)}`
+    const cachedProduct = await redis.get(cacheKey)
+    if(cachedProduct){
+        return JSON.parse(cachedProduct)
+    }
+    const products = await Product.find({...find, title: new RegExp(keyword)}).select("title thumbnail")
+    await redis.set(cacheKey,JSON.stringify(products),'EX',3600)
+    return products
+}

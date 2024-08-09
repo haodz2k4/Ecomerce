@@ -146,3 +146,14 @@ export const detail = async (req: Request, res: Response, next: NextFunction) :P
         next(error)
     }
 }
+//[GET] "/admin/products/suggestions"
+export const suggestions = async (req: Request, res: Response, next: NextFunction) :Promise<void> => {
+    const keyword = req.query.keyword as string 
+    try {
+       const find = {deleted: false}
+       const products =await ProductService.getSuggestions(keyword,find) 
+       res.status(200).json({products})
+    } catch (error) {
+        next(error)
+    }
+}

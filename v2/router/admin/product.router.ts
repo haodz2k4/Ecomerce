@@ -13,4 +13,5 @@ router.post("/add",validates.add,controller.add)
 router.patch("/change/position/:id",controller.changePosition)
 router.patch("/change/category/:id",validates.changeCategory,controller.changeCategory)
 router.get("/detail/:id",controller.detail)
+router.get("/suggestions",controller.suggestions)
 export default router
