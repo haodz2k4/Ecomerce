@@ -17,3 +17,14 @@ export const index = async (req: Request, res: Response, next: NextFunction) :Pr
         next(error)
     }
 }
+//[GET] "/admin/categories/:id/products"
+export const products = async (req: Request, res: Response, next: NextFunction) :Promise<void> => {
+    const id = req.params.id 
+    try {
+        const products = await CategoryService.getCategoryById(id);
+        res.status(200).json({products})
+    } catch (error) {
+        next(error)
+    }
+} 
+
