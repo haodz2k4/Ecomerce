@@ -2,23 +2,25 @@ import ApiError from "../../utils/ApiError.util";
 //models
 import Product from "../models/product.model";
 import Stock from "../models/stock.model";
+//interface 
+import { Find, Sort } from "../../helpers/search.helper"
+import { Pagination } from "../../helpers/pagination.helper";
 //redis
 import redis from "../../config/redis";
 
 //GET LIST PRODUCTS
-export const getProducts = async (find: any, pagination: any, sort: any): Promise<any> => {
+export const getProducts = async (find: Find, pagination: Pagination, sort: Sort,select: string): Promise<any> => {
     const cacheKey = `products:${JSON.stringify(find)}:${pagination.limit}:${pagination.skip}:${JSON.stringify(sort)}`;
 
     const cachedProducts = await redis.get(cacheKey);
     if (cachedProducts) {
-        console.log('Lấy sản phẩm từ Redis cache');
         return JSON.parse(cachedProducts);
     }
     const products = await Product
         .find(find)
         .limit(pagination.limit)
         .skip(pagination.skip)
-        .select("-deleted")
+        .select(select)
         .sort(sort);
 
     if (products.length === 0) {
@@ -44,7 +46,7 @@ export const getStockByProductId = async (id: string) => {
     return stocks
 }
 //GET COUNTS PRODUCTS
-export const getCounts = async (find: any = {}) :Promise<number> => {
+export const getCounts = async (find: Find) :Promise<number> => {
     
     const counts = await Product.countDocuments(find);
     if(counts === 0){

@@ -2,33 +2,15 @@ import { NextFunction, Request, Response } from "express";
 //service 
 import * as ProductService from "../../services/product.services";
 import { getPagination } from './../../../helpers/pagination.helper';
-import { buildSorting } from './../../../helpers/search.helper';
+import { buildFindQuery, buildSorting } from './../../../helpers/search.helper';
 //[GET] "/admin/products"
 export const index = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try { 
-        interface Find {
-            deleted: boolean,
-            status?: string,
-            hightlighted?: string,
-            title?: RegExp
-        }
-        const find: Find = {
-            deleted: false
-        } 
-        const keywordQuery = req.query.keyword 
-        if (typeof keywordQuery === "string") { 
-            const regExp = new RegExp(keywordQuery)
-            find.title = regExp
-        } 
-        const status = req.query.status 
-        if(typeof status === 'string'){
-            find.status = status
-        }
-        //sort
+        const find = buildFindQuery(req)
         const sort = buildSorting(req,{position: 'desc'})
         const counts = await ProductService.getCounts(find)
         const pagination = getPagination(req,counts,15)
-        const products = await ProductService.getProducts(find,pagination, sort);
+        const products = await ProductService.getProducts(find,pagination, sort,"-deleted");
 
         res.status(200).json({ products, pagination });
     } catch (error) {
@@ -105,7 +87,7 @@ export const add = async (req: Request, res: Response, next: NextFunction) :Prom
         if(body.position){
             body.position = parseInt(body.position)
         }else{
-            body.position = await ProductService.getCounts() + 1
+            body.position = await ProductService.getCounts({deleted: false}) + 1
         }
         const product = await ProductService.create(body);
         res.status(200).json({message: "Thêm thành công", product})

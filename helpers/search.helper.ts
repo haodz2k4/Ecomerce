@@ -10,7 +10,7 @@ export interface Find {
     [key: string]: any
 } 
 type sortType = "asc" | "desc";
-interface Sort {
+export interface Sort {
     [key: string]: sortType
 }
 export const buildFindQuery = (req: Request, name: string = "title"): Find => {
