@@ -1,6 +1,6 @@
 
 import { Request } from "express";
-interface Find {
+export interface Find {
     deleted: boolean,
     status?: string,
     title?: RegExp,
@@ -18,7 +18,6 @@ export const buildFindQuery = (req: Request, name: string = "title"): Find => {
 
     const keyword = req.query.keyword;
     const status = req.query.status;
-    
     if (typeof keyword === 'string') {
         find[name] = new RegExp(keyword, "i");
     }

@@ -141,9 +141,8 @@ export const detail = async (req: Request, res: Response, next: NextFunction) :P
     try {
         const id = req.params.id
         const product = await ProductService.getProduct({_id: id, deleted: false})
-        const category = await ProductService.getCategoryByProduct(product.category_id)
         const stocks = await ProductService.getStockByProductId(id)
-        res.status(200).json({product, category,stocks})
+        res.status(200).json({product,stocks})
     } catch (error) {
         next(error)
     }

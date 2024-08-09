@@ -1,6 +1,6 @@
 import { Request } from "express";
 
-interface Pagination {
+export interface Pagination {
     limit: number;
     currentPage: number;
     skip: number;

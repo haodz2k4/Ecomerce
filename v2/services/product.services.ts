@@ -1,8 +1,6 @@
 import ApiError from "../../utils/ApiError.util";
-import { ObjectId } from "mongoose";
 //models
 import Product from "../models/product.model";
-import Category from "../models/category.model";
 import Stock from "../models/stock.model";
 //redis
 import redis from "../../config/redis";
@@ -32,16 +30,11 @@ export const getProducts = async (find: any, pagination: any, sort: any): Promis
 }
 //GET PRODUCT 
 export const getProduct = async (find: {_id: string, deleted?: boolean, status?: string}) => {
-    const product = await Product.findOne(find)
+    const product = await Product.findOne(find).populate('category_id','title thumbnail')
     if(!product){
         throw new ApiError(404,"Không tìm thấy sản phẩm")
     }
     return product
-}
-//GET CATEGORY BY PRODUCT  
-export const getCategoryByProduct = async (category_id: ObjectId) => {
-    const category = await Category.findOne({_id: category_id, deleted: false}).select("title thumbnail")
-    return category
 }
 //GET STOCK BY PRODUCT 
 export const getStockByProductId = async (id: string) => {
