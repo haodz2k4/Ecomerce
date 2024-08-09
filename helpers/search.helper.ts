@@ -1,5 +1,12 @@
 
 import { Request } from "express";
+import { Pagination } from "./pagination.helper";
+export interface Filter {
+    find: Find,
+    sort: Sort
+    pagination: Pagination 
+    select?: string 
+}
 export interface Find {
     deleted: boolean,
     status?: string,
