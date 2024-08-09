@@ -1,6 +1,12 @@
 import ApiError from "../../utils/ApiError.util";
+import { ObjectId } from "mongoose";
+//models
 import Product from "../models/product.model";
+import Category from "../models/category.model";
+import Stock from "../models/stock.model";
+//redis
 import redis from "../../config/redis";
+
 //GET LIST PRODUCTS
 export const getProducts = async (find: any, pagination: any, sort: any): Promise<any> => {
     const cacheKey = `products:${JSON.stringify(find)}:${pagination.limit}:${pagination.skip}:${JSON.stringify(sort)}`;
@@ -32,6 +38,18 @@ export const getProduct = async (find: {_id: string, deleted?: boolean, status?:
     }
     return product
 }
+//GET CATEGORY BY PRODUCT  
+export const getCategoryByProduct = async (category_id: ObjectId) => {
+    const category = await Category.findOne({_id: category_id, deleted: false}).select("title thumbnail")
+    return category
+}
+//GET STOCK BY PRODUCT 
+export const getStockByProductId = async (id: string) => {
+    const stocks = await Stock.find({product_id: id})
+    .select("quantity warehouseLocation")
+    .populate('supplier_id','name contactInfo')
+    return stocks
+}
 //GET COUNTS PRODUCTS
 export const getCounts = async (find: any = {}) :Promise<number> => {
     
@@ -41,6 +59,7 @@ export const getCounts = async (find: any = {}) :Promise<number> => {
     }
     return counts
 }
+
 //CHANGE STATUS
 export const changeStatus = async (id: string, status: string) :Promise<any> =>{
     const product = await Product
@@ -87,6 +106,7 @@ export const changeMultiDelte = async (ids :string[]) :Promise<any> => {
     }
     return infoUpdate
 } 
+
 //CHANGE MULTI STATUS
 export const changeMultiStatus = async (ids: string[], status: string) :Promise<any> =>{
     if(ids.length < 0){
