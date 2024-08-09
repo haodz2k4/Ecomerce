@@ -1,20 +1,29 @@
 import ApiError from "../../utils/ApiError.util";
 import Product from "../models/product.model";
-
+import redis from "../../config/redis";
 //GET LIST PRODUCTS
-export const getProucts = async (find: any, pagination: any,sort: any) :Promise<any> => {
-    const products = await Product
-    .find(find)
-    .limit(pagination.limit)
-    .skip(pagination.skip)
-    .select("-deleted")
-    .sort(sort)
-    if (products.length === 0){
-        throw new ApiError(404,"Không tìm thấy sản phẩm nào hết")
-    }
+export const getProducts = async (find: any, pagination: any, sort: any): Promise<any> => {
+    const cacheKey = `products:${JSON.stringify(find)}:${pagination.limit}:${pagination.skip}:${JSON.stringify(sort)}`;
 
-    return products
-} 
+    const cachedProducts = await redis.get(cacheKey);
+    if (cachedProducts) {
+        console.log('Lấy sản phẩm từ Redis cache');
+        return JSON.parse(cachedProducts);
+    }
+    const products = await Product
+        .find(find)
+        .limit(pagination.limit)
+        .skip(pagination.skip)
+        .select("-deleted")
+        .sort(sort);
+
+    if (products.length === 0) {
+        throw new ApiError(404, "Không tìm thấy sản phẩm nào hết");
+    }
+    await redis.set(cacheKey, JSON.stringify(products), 'EX', 3600);
+
+    return products;
+}
 //GET PRODUCT 
 export const getProduct = async (find: {_id: string, deleted?: boolean, status?: string}) => {
     const product = await Product.findOne(find)

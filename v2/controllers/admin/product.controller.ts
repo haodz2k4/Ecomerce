@@ -28,7 +28,7 @@ export const index = async (req: Request, res: Response, next: NextFunction): Pr
         const sort = buildSorting(req,{position: 'desc'})
         const counts = await ProductService.getCounts(find)
         const pagination = getPagination(req,counts,15)
-        const products = await ProductService.getProucts(find,pagination, sort);
+        const products = await ProductService.getProducts(find,pagination, sort);
 
         res.status(200).json({ products, pagination });
     } catch (error) {
